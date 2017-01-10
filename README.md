@@ -1,6 +1,6 @@
 # Ressie
 
-<img src="./ressie.png" alt="Ressie" width="300px">
+<img src="./ressie.png" alt="Ressie" width="100%">
 
 Ressie is open source SIEM component for ELK stack, it provides real time monitoring, alerting and threat analysis.
 
@@ -24,8 +24,30 @@ Ressie is open source SIEM component for ELK stack, it provides real time monito
 
 ## Usage
 
+Run architecture
+```
+$ docker-composer up
+```
+
+Navigate to project root
+
+```
+$ cd ./ressie
+```
+
+Then run
+
+```python
+
+$ python -m project param1 param2
+
+```
 
 
+
+
+
+---
 **By:** Lovro Predovan
 
 2017
