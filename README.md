@@ -1,7 +1,6 @@
 # Ressie
 
-![Ressie](./ressie.png )
-
+<img src="./ressie.png" alt="Ressie" width="300px">
 
 Ressie is open source SIEM component for ELK stack, it provides real time monitoring, alerting and threat analysis.
 
