@@ -1,6 +1,8 @@
 version: '2'
 
 services:
+#Elastic stack
+
   elasticsearch:
     build: elasticsearch/
     ports:
@@ -32,6 +34,78 @@ services:
     depends_on:
       - elasticsearch
 
+# Databases
+
+  mysql:
+    restart: always
+    build: apps/mysql
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./apps/mysql:/docker-entrypoint-initdb.d
+      - mysql:/var/lib/mysql
+    env_file:
+        - variables.env
+
+  postgres:
+    restart: always
+    build: apps/postgresql
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    env_file:
+      - variables.env
+
+
+# Apps
+  python:
+    build: apps/python
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+  php:
+    build: apps/php
+    restart: always
+    working_dir: /project
+    ports:
+      - "9090:80"
+      - "443:443"
+    volumes:
+      - ./application:/project
+    depends_on:
+      - mysql
+    env_file:
+      - variables.env
+
+  nodejs:
+    build: apps/nodejs
+    restart: always
+    ports:
+      - "3030:3000"
+    volumes:
+       - ./app:/src/app
+    depends_on:
+      - mysql
+    env_file:
+      - variables.env
+
+
 networks:
   docker_elk:
     driver: bridge
+
+volumes:
+  mysql:
+    driver: local
+  postgres:
+    driver: local
