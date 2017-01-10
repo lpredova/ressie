@@ -1,6 +1,9 @@
-# Ressie
+# Ressie SIEM Elastic plugin
 
-<img src="./ressie.png" alt="Ressie" width="100px">
+<img src="./ressie.png" alt="Ressie" width="100px"> + 
+<img src="http://www.emerce.nl/content/uploads/2016/10/elastic_stack.png" alt="Ressie" width="280px">
+
+
 
 Ressie is open source SIEM component for ELK stack, it provides real time monitoring, alerting and threat analysis.
 
@@ -19,14 +22,31 @@ Ressie is open source SIEM component for ELK stack, it provides real time monito
 
 ## Installation
 
-### Requirements
+### Requirements & Configuration
 
 * Docker
 * Docker-compose
 
+Create and configure variables.env file based on variables.env.example
+
+```
+PostgreSQL settings
+
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=secret
+PGDATA=/var/lib/postgresql/data/pgdata
+
+MySQL settings
+MYSQL_ROOT_PASSWORD=secret
+MYSQL_DATABASE=databaseName
+MYSQL_USER=databaseUser
+MYSQL_PASSWORD=databaseSecret
+```
+
 ## Usage
 
 Run architecture
+
 ```
 $ docker-composer up
 ```
@@ -40,16 +60,9 @@ $ cd ./ressie
 Then run
 
 ```python
-
 $ python -m project param1 param2
 
 ```
-
-
-
-
-
 ---
-**By:** Lovro Predovan
-
+**Lovro Predovan**
 2017
