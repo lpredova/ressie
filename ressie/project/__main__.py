@@ -8,6 +8,7 @@ def main(args=None):
 
     print("This is the main routine.")
     print("It should do something interesting.")
+    print args
 
     # Do argument parsing here (eg. with argparse) and anything else
     # you want your project to do.
