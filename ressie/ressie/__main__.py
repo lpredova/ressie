@@ -1,6 +1,8 @@
 import sys
 
+import alerting.slack as slack
 import helpers.helper as helper
+import queries.query as query
 
 
 def main(args=None):
@@ -9,10 +11,16 @@ def main(args=None):
         args = sys.argv[1:]
 
     try:
-        if args[0] == 'query':
-            print args[0]
+        param = args[0]
+        if param == "query":
+            elastic = query.ElasticQuery
+            elastic.check_status()
 
-        elif args[0] == 'help' or args[0] == 'h':
+        elif param == "slack":
+            alert = slack.Slack()
+            alert.send_message()
+
+        elif param == "help" or param == "h":
             helper.print_help()
 
         else:

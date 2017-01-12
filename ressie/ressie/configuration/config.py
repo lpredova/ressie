@@ -5,7 +5,8 @@ class Config(object):
     def __init__(self):
         pass
 
-    def parse_config(self):
+    @staticmethod
+    def parse_config():
         Config = ConfigParser.ConfigParser()
         var = Config.read('config')
 
