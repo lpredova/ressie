@@ -13,7 +13,7 @@ def main(args=None):
     try:
         param = args[0]
         if param == "query":
-            elastic = query.ElasticQuery
+            elastic = query.ElasticQuery()
             elastic.check_status()
 
         elif param == "slack":
@@ -27,7 +27,7 @@ def main(args=None):
             helper.print_red("Unknown option")
 
     except Exception as e:
-        helper.print_red("Missing required options: " + e.message)
+        helper.print_red("\nError: " + e.message + "\n")
 
 
 if __name__ == "__main__":
