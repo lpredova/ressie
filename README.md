@@ -22,6 +22,22 @@ Ressie is open source SIEM component for ELK stack, it provides real time monito
 
 ## Installation
 
+
+Navigate to project root
+
+```
+$ cd ./ressie
+```
+
+And run
+
+```
+
+pip install -r requirements.txt
+
+```
+
+
 ### Requirements & Configuration
 
 * Docker
