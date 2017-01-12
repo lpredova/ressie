@@ -1,0 +1,5 @@
+[Slack]
+APIKey: Single
+
+[Mailgun]
+APIKey: Single
