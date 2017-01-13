@@ -18,7 +18,7 @@ def main(args=None):
 
         elif param == "slack":
             alert = slack.Slack()
-            alert.send_message()
+            alert.send_message("CUSTOM MESSAGE FOR SLACK")
 
         elif param == "help" or param == "h":
             helper.print_help()

@@ -1,18 +1,23 @@
+from slackclient import SlackClient
+
+from ..configuration.config import Config
+
 
 class Slack(object):
+    apiKey = None
+    sc = None
+
     def __init__(self):
+        configuration = Config()
+        self.apiKey = configuration.parse_config("Slack", "apikey")
+        self.sc = SlackClient(self.apiKey)
         pass
 
-    def send_message(self):
-        #configuration.config.parse_config()
-
-        '''slack_token = os.environ["SLACK_API_TOKEN"]
-        sc = SlackClient(slack_token)
-
-        sc.api_call(
+    def send_message(self, message):
+        self.sc.api_call(
             "chat.postMessage",
             channel="#lovro-test",
-            text="Hello from Python! :tada:"
-        )'''
+            text=":warning: \n" + message
+        )
 
-        print 'slack'
+        print("Sent")
