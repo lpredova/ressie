@@ -1,29 +1,28 @@
 import requests
 
-from ..configuration.config import Config
+from ..configurations.config import Config
 
 
-class Slack(object):
+class Mailer(object):
     apiKey = None
-    sandbox = None
-    sc = None
+    sandboxUrl = None
+    recipient = None
 
     def __init__(self):
         configuration = Config()
         self.apiKey = configuration.parse_config("MailGun", "apikey")
+        self.sandboxUrl = configuration.parse_config("MailGun", "sandbox")
+        self.recipient = configuration.parse_config("MailGun", "recipient")
         pass
 
     def send_message(self, message):
-        key = 'YOUR API KEY HERE'
-        sandbox = 'YOUR SANDBOX URL HERE'
-        recipient = 'YOUR EMAIL HERE'
-
-        request_url = 'https://api.mailgun.net/v2/{0}/messages'.format(sandbox)
-        request = requests.post(request_url, auth=('api', key), data={
-            'from': 'hello@example.com',
-            'to': recipient,
+        request = requests.post(self.sandboxUrl, auth=('api', self.apiKey), data={
+            'from': 'ressie@woof.com',
+            'to': self.recipient,
             'subject': 'Hello',
-            'text': 'Hello from Mailgun'
+            'text': message
         })
 
+        print(request.status_code)
+        print(request.text)
         print("Sent")

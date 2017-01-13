@@ -1,5 +1,8 @@
 [Slack]
-APIKey: slack-token
+token: slack-token
 
-[Mailgun]
-APIKey: Single
+[MailGun]
+APIKey: mailgun-api-key
+sandbox: url-to-sandbox
+recipient: just4testing@recipient.com
+
