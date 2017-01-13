@@ -1,4 +1,4 @@
 .DS_STORE
 .idea
 variables.env
-ressie/ressie/config/config.prod
+config.prod
