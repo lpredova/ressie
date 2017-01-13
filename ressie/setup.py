@@ -2,10 +2,10 @@ from setuptools import setup
 
 setup(name='ressie',
       version='0.1.0',
-      packages=['project'],
+      packages=['ressie'],
       entry_points={
           'console_scripts': [
-              'project = project.__main__:main'
+              'ressie = ressie.__main__:main'
           ]
       },
       )

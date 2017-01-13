@@ -3,4 +3,4 @@ class ElasticQuery(object):
         pass
 
     def check_status(self):
-        print 'status'
+        print('status')
