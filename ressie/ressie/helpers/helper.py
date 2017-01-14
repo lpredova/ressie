@@ -5,6 +5,8 @@ def print_help():
           "\nOptions\n---------------------\n" \
           "monitor - runs monitoring deamon\n" \
           "h, help - open help prompt\n" \
+          "slack - sends slack notification\n" \
+          "mail - sends mail\n" \
           ""
 
 
