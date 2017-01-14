@@ -20,6 +20,18 @@ Ressie is open source SIEM component for ELK stack, it provides real time monito
 * Logstash 5 
 * Kibana 5
 
+#### Features:
+* Custom alerting (email, slack..)
+
+**TODO**:
+
+* pattern matching
+* custom config
+* workers(queueing) support
+* machine learning implementation
+* suspicious usage monitor
+* TBD...
+
 ## Installation
 
 
@@ -28,15 +40,6 @@ Navigate to project root
 ```
 $ cd ./ressie
 ```
-
-And run
-
-```
-
-pip install -r requirements.txt
-
-```
-
 
 ### Requirements & Configuration
 
@@ -73,12 +76,21 @@ Navigate to project root
 $ cd ./ressie
 ```
 
-Then run
+Then run:
 
 ```python
-$ python -m project param1 param2
+$ python -m help
 
 ```
+
+### References
+
+Big  :clap:  to:
+
+
+* [Adam Muntner - Fuzz DB project](https://github.com/fuzzdb-project/fuzzdb/) - used for patterns recognition
+* [Anthony Lapenna - Docker ELK stack](https://devhub.io/repos/deviantony-docker-elk) - used for base of test architecture
+
 ---
 **Lovro Predovan**
 2017
