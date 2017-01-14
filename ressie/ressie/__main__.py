@@ -14,7 +14,7 @@ def main(args=None):
 
     try:
         param = args[0]
-        if param == "query":
+        if param == "search":
             elastic = query.ElasticQuery()
             elastic.check_status()
 
