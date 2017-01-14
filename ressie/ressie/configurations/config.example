@@ -1,0 +1,9 @@
+[Slack]
+token: slack-token
+
+[MailGun]
+publicKey : public-key
+privateKey : private-key
+domain : sandboxSOMENUMBERS.mailgun.org
+authorized_recipient: mailgun_authorized_recipient@recipient.com
+

@@ -10,9 +10,8 @@ class Config(object):
     def parse_config(self, section, key):
         config_reader = ConfigParser.ConfigParser()
 
-        path = os.path.dirname(sys.modules['__main__'].__file__) + '/configuration/config.prod'
+        path = os.path.dirname(sys.modules['__main__'].__file__) + '/configurations/config.prod'
         config_reader.read(path)
-
         return self.config_section_map(section, config_reader)[key]
 
     def config_section_map(self, section, config_reader):

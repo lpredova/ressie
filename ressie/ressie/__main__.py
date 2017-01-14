@@ -1,6 +1,7 @@
 import sys
 
-import alerting.slack as slack
+import alerts.mail as mailer
+import alerts.slack as slack
 import helpers.helper as helper
 import queries.query as query
 
@@ -18,6 +19,10 @@ def main(args=None):
 
         elif param == "slack":
             alert = slack.Slack()
+            alert.send_message("CUSTOM MESSAGE FOR SLACK")
+
+        elif param == "mail":
+            alert = mailer.Mailer()
             alert.send_message("CUSTOM MESSAGE FOR SLACK")
 
         elif param == "help" or param == "h":
