@@ -3,6 +3,7 @@ import sys
 import alerts.mail as mailer
 import alerts.slack as slack
 import helpers.helper as helper
+import indexes.indexer as index
 import queries.query as query
 
 
@@ -23,7 +24,11 @@ def main(args=None):
 
         elif param == "mail":
             alert = mailer.Mailer()
-            alert.send_message("CUSTOM MESSAGE FOR SLACK")
+            alert.send_message("CUSTOM MESSAGE FOR EMAIL")
+
+        elif param == "index":
+            indexer = index.Indexer()
+            indexer.create_index()
 
         elif param == "help" or param == "h":
             helper.print_help()
