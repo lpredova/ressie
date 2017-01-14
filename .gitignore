@@ -2,3 +2,4 @@
 .idea
 variables.env
 config.prod
+.DS_STORE
