@@ -2,7 +2,8 @@
 token: slack-token
 
 [MailGun]
-APIKey: mailgun-api-key
-sandbox: url-to-sandbox
-recipient: just4testing@recipient.com
+publicKey : public-key
+privateKey : private-key
+domain : sandboxSOMENUMBERS.mailgun.org
+authorized_recipient: mailgun_authorized_recipient@recipient.com
 

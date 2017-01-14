@@ -7,8 +7,5 @@ setup(name='ressie',
           'console_scripts': [
               'ressie = ressie.__main__:main'
           ]
-      },
+      }, requires=['mailgun2', 'slackclient', 'requests']
       )
-
-
-#https://chriswarrick.com/blog/2014/09/15/python-apps-the-right-way-entry_points-and-scripts/

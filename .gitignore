@@ -2,4 +2,3 @@
 .idea
 variables.env
 config.prod
-*.pyc
