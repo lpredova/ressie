@@ -1,4 +1,4 @@
-.DS_STORE
+*.pyc
 .idea
 variables.env
 config.prod
