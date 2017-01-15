@@ -36,10 +36,10 @@ class ElasticQuery(object):
 
         date = datetime.datetime.now()
         date = date.strftime("%Y.%m.%d")
-        index = "logstash-%s" % date
+        index_date = "logstash-%s" % date
         es = Elasticsearch()
         try:
-            res = es.search(index=index, doc_type="logs", body=query)
+            res = es.search(index=index_date, doc_type="logs", body=query)
             for hit in res['hits']['hits']:
                 print("%s" % hit["_source"]["message"])
 
