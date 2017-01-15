@@ -2,9 +2,6 @@
   "name": "app",
   "version": "0.0.0",
   "private": true,
-  "scripts": {
-    "start": "gulp --gulpfile app/gulpfile.js"
-  },
   "dependencies": {
     "express": "~4.9.0",
     "body-parser": "~1.8.1",

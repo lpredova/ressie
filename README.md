@@ -76,6 +76,12 @@ $ cd ./ressie
 $ docker-composer up
 ```
 
+To put logs directly to Elasticsearch use:
+
+```
+$ nc localhost 5000 < /path/to/logfile.log
+```
+
 #### Run App
 
 Setup services from config:
@@ -103,6 +109,7 @@ Then run:
 $ python -m help
 
 ```
+
 
 ### References
 
