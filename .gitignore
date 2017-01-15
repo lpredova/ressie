@@ -1,6 +1,6 @@
 *.pyc
+.DS_STORE
 .idea
 variables.env
 config.prod
-.DS_STORE
 MAIN_WRITELOCK
