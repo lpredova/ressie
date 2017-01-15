@@ -80,7 +80,7 @@ $ docker-composer up
 
 Setup services from config:
 
-* ```
+```
 $ cd ./ressie/ressie/configurations/
 ```
 

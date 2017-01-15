@@ -3,4 +3,4 @@
 variables.env
 config.prod
 .DS_STORE
-ressie/data/index/*
+MAIN_WRITELOCK
