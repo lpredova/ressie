@@ -1,32 +1,32 @@
 # Ressie SIEM Elastic plugin
 
-<img src="./ressie.png" alt="Ressie" width="100px"> + 
-<img src="http://www.emerce.nl/content/uploads/2016/10/elastic_stack.png" alt="Ressie" width="280px">
+<img src="./ressie.png" alt="Ressie" width="170px"> + <img src="http://www.emerce.nl/content/uploads/2016/10/elastic_stack.png" alt="Ressie" width="280px">
 
 
 
 Ressie is open source SIEM component for ELK stack, it provides real time monitoring, alerting and threat analysis.
 
-#### Note:
+#### Note
 **This work is just SIEM proof of concept. Use at your own risk!**
 
-#### Contains:
+#### Contains
 * MySql 5.7 - https://hub.docker.com/_/mysql/
 * Postgres 9.5  - https://hub.docker.com/_/postgres/
-* Ubuntu + Php 5.6 + Apache 2 
+* Ubuntu + Php 5.6 + Apache 2
 * Ubuntu + NodeJs
 * Ubuntu + Python 2.7 + Django
 * ElasticSearch 5 
 * Logstash 5 
 * Kibana 5
 
-#### Features:
+#### Features
 * Custom alerting (email, slack..)
+* Indexed Fuzz DB for full text search attack database
+* Custom configuration of service 
 
 **TODO**:
 
 * pattern matching
-* custom config
 * workers(queueing) support
 * machine learning implementation
 * suspicious usage monitor
@@ -64,13 +64,34 @@ MYSQL_PASSWORD=databaseSecret
 
 ## Usage
 
-Run architecture
+####Run architecture
+
+Navigate to **project** root
+
+```
+$ cd ./ressie
+```
 
 ```
 $ docker-composer up
 ```
 
-Navigate to project root
+#### Run App
+
+Setup services from config:
+
+* ```
+$ cd ./ressie/ressie/configurations/
+```
+
+* Name file config.prod 
+
+* Use example from [HERE](https://github.com/lpredova/ressie/blob/master/ressie/ressie/configurations/config.example) to write new config file based on your credentials and preferences
+* Save  :tada:
+
+
+
+Navigate to **app** root
 
 ```
 $ cd ./ressie
