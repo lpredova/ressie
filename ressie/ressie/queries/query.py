@@ -1,3 +1,4 @@
+import datetime
 import os
 
 import whoosh.index as index
@@ -28,19 +29,23 @@ class ElasticQuery(object):
             "query": {
                 "range":
                     {
-                        "@timestamp": {"gte": "now-2m"}
+                        "@timestamp": {"gte": "now-20000m"}
                     }
             }
         }
 
+        date = datetime.datetime.now()
+        date = date.strftime("%Y.%m.%d")
+        index = "logstash-%s" % date
         es = Elasticsearch()
-
         try:
-            res = es.search(index="logstash-2017.01.15", doc_type="logs", body=query)
-            print res
+            res = es.search(index=index, doc_type="logs", body=query)
+            for hit in res['hits']['hits']:
+                print("%s" % hit["_source"]["message"])
+
+                # Make comparison for error body od request data
+                # Compare with local database
+                # Save to database
 
         except Exception as e:
             print e.message
-
-        for hit in res['hits']['hits']:
-            print("%s" % hit["_source"]["message"])
