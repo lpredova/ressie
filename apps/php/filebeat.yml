@@ -7,7 +7,9 @@ filebeat:
       # For each file found under this path, a harvester is started.
       paths:
         - "/var/log/*.log"
-        - "/var/log/syslog"
+        - "/var/log/apache2/error.log"
+        - "/var/log/apache2/access.log"
+        - "/var/log/apache2/other_vhosts_access.log"
 
       # Type of the files. Based on this the way the file is read is decided.
       # The different types cannot be mixed in one prospector
@@ -16,7 +18,6 @@ filebeat:
       # * log: Reads every line of the log file (default)
       # * stdin: Reads the standard in
       input_type: log
-
       document_type: syslog
 
 #----------------------------- Logstash output --------------------------------
