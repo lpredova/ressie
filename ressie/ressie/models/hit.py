@@ -75,3 +75,9 @@ class Hit(object):
             return self.hit["_source"]["http"]["response"]["code"]
 
         return None
+
+    def get_pretty_print(self):
+
+        return (
+            "%s %s \n %s \n %s" % (
+                self.get_method(), self.get_path(), self.get_request_headers(), self.get_request_body()))
