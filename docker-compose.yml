@@ -1,8 +1,20 @@
 version: '2'
 
 services:
-#Elastic stack
+# Ressie MySql
+  ressie_operational_db:
+    restart: always
+    build: database/
+    expose:
+      - "3306"
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./database/sql/:/docker-entrypoint-initdb.d
+    env_file:
+        - variables.env
 
+#Elastic stack
   elasticsearch:
     build: elasticsearch/
     ports:
@@ -10,8 +22,6 @@ services:
       - "9300:9300"
     environment:
       ES_JAVA_OPTS: "-Xms1g -Xmx1g"
-    networks:
-      - docker_elk
   logstash:
     build: logstash/
     command: -f /etc/logstash/conf.d/
@@ -19,8 +29,7 @@ services:
       - ./logstash/config:/etc/logstash/conf.d
     ports:
       - "5000:5000"
-    networks:
-      - docker_elk
+      - "5044:5044"
     depends_on:
       - elasticsearch
   kibana:
@@ -29,13 +38,10 @@ services:
       - ./kibana/config/:/etc/kibana/
     ports:
       - "5601:5601"
-    networks:
-      - docker_elk
     depends_on:
       - elasticsearch
 
-# Databases
-
+# App Databases
   mysql:
     restart: always
     build: apps/mysql
@@ -49,29 +55,29 @@ services:
     env_file:
         - variables.env
 
-  postgres:
-    restart: always
-    build: apps/postgresql
-    expose:
-      - "5432"
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres:/var/lib/postgresql/data
-    env_file:
-      - variables.env
+#  postgres:
+#    restart: always
+#    build: apps/postgresql
+#    expose:
+#      - "5432"
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - postgres:/var/lib/postgresql/data
+#    env_file:
+#      - variables.env
 
 
 # Apps
-  python:
-    build: apps/python
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/code
-    ports:
-      - "8000:8000"
-    depends_on:
-      - postgres
+#  python:
+#    build: apps/python
+#    command: python manage.py runserver 0.0.0.0:8000
+#    volumes:
+#      - .:/code
+#    ports:
+#      - "8000:8000"
+#    depends_on:
+#      - postgres
 
   php:
     build: apps/php
@@ -81,31 +87,28 @@ services:
       - "9090:80"
       - "443:443"
     volumes:
-      - ./application:/project
+      - ./apps/php/application:/project
     depends_on:
       - mysql
+    links:
+      - logstash
     env_file:
       - variables.env
 
-  nodejs:
-    build: apps/nodejs
-    restart: always
-    ports:
-      - "3030:3000"
-    volumes:
-       - ./app:/src/app
-    depends_on:
-      - mysql
-    env_file:
-      - variables.env
-
-
-networks:
-  docker_elk:
-    driver: bridge
+  #nodejs:
+#  build: apps/nodejs
+#    restart: always
+#    ports:
+#      - "3030:3000"
+#    volumes:
+#       - ./apps/nodejs/app:/src/app
+#    depends_on:
+#      - mysql
+#    env_file:
+#      - variables.env
 
 volumes:
   mysql:
     driver: local
-  postgres:
-    driver: local
+#  postgres:
+#    driver: local
