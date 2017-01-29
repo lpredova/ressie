@@ -1,5 +1,6 @@
 import decimal
 import os
+from difflib import SequenceMatcher
 
 import whoosh.index as index
 from whoosh.qparser import QueryParser
@@ -15,6 +16,8 @@ class Http(object):
 
     average_threshold = 1.5
     index_folder = os.getcwd() + "/data/index/"
+    blacklist_folder = os.getcwd() + "/data/custom/"
+    blacklist_file = "blacklist.txt"
 
     def number_requests(self, hits):
         query = Queries()
@@ -27,29 +30,21 @@ class Http(object):
             threshold = decimal.Decimal(average) * decimal.Decimal(self.average_threshold)
 
             if hits['hits']['total'] > threshold:
-                mailer = Mailer()
-                slack = Slack()
-
-                alert = "Number of requests suspiciously high"
-                mailer.send_message(alert)
-                slack.send_message(alert)
-                print(alert + "\n Alerts sent!")
+                self.send_alert("Number of requests suspiciously high", None)
 
         query.insert_requests(hits['hits']['total'])
 
     def url(self, hit):
-        url = hit.get_request()
+        url = hit.get_path()
+
         # check url for js and sql
         if url and not (self.check_for_sql_and_js(url)):
-            print(hit.get_query())
 
-            print("OK URL")
-
-        else:
-            print("NEKOREKTAN URL")
+            if self.check_blacklist(url):
+                self.send_alert("URL blacklisted", hit)
+                print("NEKOREKTAN URL")
 
     def body(self, hit):
-
         if hit.get_method() == "POST":
 
             body = hit.get_request_body()
@@ -87,12 +82,23 @@ class Http(object):
 
     def check_for_sql_and_js(self, string):
         if any(st in string for st in self.sql) or any(st in string for st in self.js):
-            return False
+            return True
 
-        return True
+        return False
 
-    def check_blacklist(self):
-        print("checking blacklist")
+    def check_blacklist(self, string):
+
+        with open(self.blacklist_folder + self.blacklist_file) as f:
+            for line in f:
+                if self.similar(string, line) >= 0.6:
+                    print("%s is blacklisted!" % string)
+                    return True
+
+        return False
+
+    # finding similar matches
+    def similar(self, a, b):
+        return SequenceMatcher(None, a, b).ratio()
 
     def check_attack_db(self, attack):
         ix = index.open_dir(self.index_folder)
@@ -101,3 +107,17 @@ class Http(object):
 
         with ix.searcher() as s:
             s.search(q, limit=20)
+
+    def send_alert(self, message, hit):
+
+        payload = message
+        mailer = Mailer()
+        slack = Slack()
+        
+        if hit:
+            formatted_msg = hit.get_pretty_print()
+            payload = message + '\n' + formatted_msg
+
+        mailer.send_message(payload)
+        slack.send_message(payload)
+        print(message + "\n Alerts sent!")
