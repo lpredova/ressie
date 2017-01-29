@@ -58,6 +58,7 @@ class ElasticQuery(object):
                 elastic_hit = Hit()
                 elastic_hit.set_hit(hit)
 
+                http_analyzer.url(elastic_hit)
                 http_analyzer.body(elastic_hit)
                 http_analyzer.header(elastic_hit)
                 http_analyzer.ip(elastic_hit)
