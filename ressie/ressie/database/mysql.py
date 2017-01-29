@@ -8,12 +8,13 @@ class MySql(object):
     def __init__(self):
 
         try:
-            self.connection = pymysql.connect(host='localhost',
-                                              user='root',
-                                              db='ressie',
+            self.connection = pymysql.connect(host="127.0.0.1",
+                                              port=3307,
+                                              user="ressie",
+                                              password="123456",
+                                              db="ressie",
                                               cursorclass=pymysql.cursors.DictCursor)
 
-            print self.connection
         except Exception as e:
             print(e)
 

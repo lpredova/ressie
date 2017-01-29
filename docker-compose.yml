@@ -3,11 +3,16 @@ version: '2'
 services:
 # Ressie MySql
   ressie_operational_db:
+    restart: always
     build: database/
+    expose:
+      - "3306"
     ports:
       - "3307:3306"
     volumes:
       - ./database/sql/:/docker-entrypoint-initdb.d
+    env_file:
+        - variables.env
 
 #Elastic stack
   elasticsearch:

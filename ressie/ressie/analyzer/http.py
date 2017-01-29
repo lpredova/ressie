@@ -12,7 +12,7 @@ class Http(object):
         print("Number of requests")
 
         db = MySql()
-        #db.execute_query("SELECT * FROM incident")
+        db.execute_query("SELECT * FROM incident")
 
         # Number of hits above average, if above average raise alarm
         '''if res['hits']['total'] > 5:
