@@ -20,6 +20,25 @@ CREATE TABLE IF NOT EXISTS `ressie`.`incident` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `ressie`.`request_counts`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ressie`.`request_counts` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `count` INT NOT NULL,
+  `createdAt` INT NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `ressie`.`request_length`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ressie`.`request_length` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `length` INT NOT NULL,
+  `createdAt` INT NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

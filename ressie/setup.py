@@ -7,5 +7,5 @@ setup(name='ressie',
           'console_scripts': [
               'ressie = ressie.__main__:main'
           ]
-      }, requires=['mailgun2', 'slackclient', 'requests', 'whoosh', 'elasticsearch>=5.0.0,<6.0.0']
+      }, requires=['mailgun2', 'slackclient', 'requests', 'whoosh', 'elasticsearch>=5.0.0,<6.0.0', 'pymysql']
       )

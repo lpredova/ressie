@@ -45,6 +45,7 @@ $ cd ./ressie
 
 * Docker
 * Docker-compose
+* MySQL database server (locally for ressie data)
 
 Create and configure variables.env file based on variables.env.example
 
@@ -61,6 +62,7 @@ MYSQL_DATABASE=databaseName
 MYSQL_USER=databaseUser
 MYSQL_PASSWORD=databaseSecret
 ```
+
 
 ## Usage
 
