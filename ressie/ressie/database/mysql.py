@@ -22,13 +22,21 @@ class MySql(object):
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(sql)
-                result = cursor.fetchone()
-                print(result)
-        finally:
+                return cursor.fetchone()
+
+        except Exception as e:
             self.connection.close()
+            print(e.message)
 
-    def insert_incident(self):
-        print("Insert incident")
+    def insert_query(self, sql):
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(sql)
+                self.connection.commit()
 
-    def select_number_of_requests(self):
-        print("Number of requests")
+        except Exception as e:
+            self.connection.close()
+            print(e.message)
+
+    def close(self):
+        self.connection.close()

@@ -2,26 +2,33 @@ import os
 
 import whoosh.index as index
 from whoosh.qparser import QueryParser
-from ressie.database import MySql
+
+from ressie.alerts.mail import Mailer
+from ressie.alerts.slack import Slack
+from ressie.database import Queries
 
 
 class Http(object):
     index_folder = os.getcwd() + "/data/index/"
 
-    def number_requests(self, results):
-        print("Number of requests")
+    def number_requests(self, hits):
+        query = Queries()
+        result = query.number_of_requests()
 
-        db = MySql()
-        db.execute_query("SELECT * FROM incident")
+        # min 3 items for average
+        if result['total'] >= 3:
 
-        # Number of hits above average, if above average raise alarm
-        '''if res['hits']['total'] > 5:
-            mailer = Mailer()
-            slack = Slack()
+            average = query.avg_requests()
+            if hits['hits']['total'] > average['average']:
+                mailer = Mailer()
+                slack = Slack()
 
-            mailer.send_message("Number of requests suspiciously high")
-            slack.send_message("AAAAA jebiga :D")
-         '''
+                alert = "Number of requests suspiciously high"
+                mailer.send_message(alert)
+                slack.send_message(alert)
+                print(alert + "\n Alerts sent!")
+
+        query.insert_requests(hits['hits']['total'])
 
     def url(self, hit):
         # CHECK IF SQL
