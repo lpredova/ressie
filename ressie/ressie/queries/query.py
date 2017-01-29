@@ -7,6 +7,7 @@ import whoosh.index as index
 from elasticsearch import Elasticsearch
 from whoosh.qparser import QueryParser
 
+from ressie.models import Hit
 from ..analyzer.http import Http
 
 
@@ -59,43 +60,17 @@ class ElasticQuery(object):
         try:
             res = es.search(index=index_date, body=query)
 
-            http = Http()
-            http.number_requests()
+            http_analyzer = Http()
+            http_analyzer.number_requests(res)
 
             for hit in res['hits']['hits']:
-                http.body()
-                http.header()
-                http.ip()
-                http.response_time()
+                elastic_hit = Hit()
+                elastic_hit.set_hit(hit)
 
-                if hit["_source"]["path"]:
-                    http.url()
-
-                if hit["_source"]["http"]["response"]["headers"]:
-                    http.header()
-
-                if hit["_source"]["http"]["request"]["headers"]:
-                    http.header()
-
-                print(hit["_source"]["query"])
-                print("%s" % hit["_source"]["method"])
-                print("%s" % hit["_source"]["@timestamp"])
-
-                #print("%s"hit["_source"]["path"] % )
-                #print("%s" % hit["_source"]["http"]["request"]["headers"])
-                #print("%s" % hit["_source"]["http"]["response"]["headers"])
-                print("%s" % hit["_source"]["http"]["response"]["code"])
-
-                if hit["_source"]["method"] == "POST":
-                    http.body()
-                    print("%s" % hit["_source"]["http"]["request"]["params"])
-
-                print("\n")
-
-
-                # Make comparison for error body od request data
-                # Compare with local database
-                # Save to database
+                http_analyzer.body(elastic_hit)
+                http_analyzer.header(elastic_hit)
+                http_analyzer.ip(elastic_hit)
+                http_analyzer.response_time(elastic_hit)
 
         except Exception as e:
             print(e.message)

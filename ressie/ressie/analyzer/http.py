@@ -1,9 +1,7 @@
 # compare for standard html and SQL keywords
-from ..alerts.mail import Mailer
-from ..alerts.slack import Slack
 
 class Http(object):
-    def number_requests(self):
+    def number_requests(self, results):
         print("Number of requests")
 
         # Number of hits above average, if above average raise alarm
@@ -15,20 +13,18 @@ class Http(object):
             slack.send_message("AAAAA jebiga :D")
          '''
 
-    def url(self):
+    def url(self, hit):
         print("URL")
 
-    def body(self):
-
-
+    def body(self, hit):
         print("Analyzing body")
         print("check for sql keywords")
 
-    def header(self):
+    def header(self, hit):
         print("Analyzing header (length)")
 
-    def ip(self):
+    def ip(self, hit):
         print("Analyzing header (length)")
 
-    def response_time(self):
+    def response_time(self, hit):
         print("Analyzing response time")
