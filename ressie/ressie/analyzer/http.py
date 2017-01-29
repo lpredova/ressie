@@ -2,6 +2,7 @@ import os
 
 import whoosh.index as index
 from whoosh.qparser import QueryParser
+from ressie.database import MySql
 
 
 class Http(object):
@@ -9,6 +10,9 @@ class Http(object):
 
     def number_requests(self, results):
         print("Number of requests")
+
+        db = MySql()
+        #db.execute_query("SELECT * FROM incident")
 
         # Number of hits above average, if above average raise alarm
         '''if res['hits']['total'] > 5:

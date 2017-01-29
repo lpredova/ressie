@@ -6,19 +6,21 @@ class MySql(object):
     connection = None
 
     def __init__(self):
-        self.connection = pymysql.connect(host='localhost',
-                                          user='user',
-                                          password='passwd',
-                                          db='db',
-                                          charset='utf8mb4',
-                                          cursorclass=pymysql.cursors.DictCursor)
 
-    def execute_query(self):
+        try:
+            self.connection = pymysql.connect(host='localhost',
+                                              user='root',
+                                              db='ressie',
+                                              cursorclass=pymysql.cursors.DictCursor)
+
+            print self.connection
+        except Exception as e:
+            print(e)
+
+    def execute_query(self, sql):
         try:
             with self.connection.cursor() as cursor:
-                # Read a single record
-                sql = "SELECT `id`, `password` FROM `users` WHERE `email`=%s"
-                cursor.execute(sql, ('webmaster@python.org',))
+                cursor.execute(sql)
                 result = cursor.fetchone()
                 print(result)
         finally:

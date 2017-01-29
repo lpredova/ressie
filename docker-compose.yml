@@ -1,8 +1,15 @@
 version: '2'
 
 services:
-#Elastic stack
+# Ressie MySql
+  ressie_operational_db:
+    build: database/
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./database/sql/:/docker-entrypoint-initdb.d
 
+#Elastic stack
   elasticsearch:
     build: elasticsearch/
     ports:
@@ -29,8 +36,7 @@ services:
     depends_on:
       - elasticsearch
 
-# Databases
-
+# App Databases
   mysql:
     restart: always
     build: apps/mysql
