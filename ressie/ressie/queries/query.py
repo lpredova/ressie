@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import datetime
+import time
 
 from elasticsearch import Elasticsearch
 
@@ -45,6 +46,8 @@ class ElasticQuery(object):
         date = date.strftime("%Y.%m.%d")
         index_date = "logstash-%s" % date
         es = Elasticsearch()
+
+        start = time.clock()
         try:
             res = es.search(index=index_date, body=query)
 
@@ -60,5 +63,10 @@ class ElasticQuery(object):
                 http_analyzer.ip(elastic_hit)
                 http_analyzer.response_time(elastic_hit)
 
+            end = time.clock()
+            print("Evaluation done in: %f" % (end - start))
+
         except Exception as e:
+            end = time.clock()
+            print("Evaluation done in: %f" % (end - start))
             print(e.message)
