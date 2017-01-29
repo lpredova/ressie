@@ -1,1 +1,0 @@
-# compare for standard html and SQL keywords

@@ -7,6 +7,8 @@ import whoosh.index as index
 from elasticsearch import Elasticsearch
 from whoosh.qparser import QueryParser
 
+from ..analyzer.http import Http
+
 
 class ElasticQuery(object):
     # in minutes
@@ -18,7 +20,6 @@ class ElasticQuery(object):
 
     def check_status(self):
         self.elasticsearch()
-        # self.elasticsearch_req_number()
 
     def check_attack_db(self, attack):
         ix = index.open_dir(self.index_folder)
@@ -57,37 +58,40 @@ class ElasticQuery(object):
         es = Elasticsearch()
         try:
             res = es.search(index=index_date, body=query)
-            print(res)
+
+            http = Http()
+            http.number_requests()
+
             for hit in res['hits']['hits']:
-                print(hit)
-                # print("%s" % hit["_source"]["message"])
+                http.body()
+                http.header()
+                http.ip()
+                http.response_time()
 
-                # Make comparison for error body od request data
-                # Compare with local database
-                # Save to database
+                if hit["_source"]["path"]:
+                    http.url()
 
-        except Exception as e:
-            print(e.message)
+                if hit["_source"]["http"]["response"]["headers"]:
+                    http.header()
 
-    def elasticsearch_req_number(self):
-        query = {
-            "query": {
-                "range":
-                    {
-                        "@timestamp": {"gte": "now-%dm" % self.time_threshold}
-                    }
-            }
-        }
+                if hit["_source"]["http"]["request"]["headers"]:
+                    http.header()
 
-        date = datetime.datetime.now()
-        date = date.strftime("%Y.%m.%d")
-        index_date = "logstash-%s" % date
-        es = Elasticsearch()
-        try:
-            res = es.search(index=index_date, doc_type="logs", body=query)
-            print(res)
-            for hit in res['hits']['hits']:
-                print("%s" % hit["_source"]["message"])
+                print(hit["_source"]["query"])
+                print("%s" % hit["_source"]["method"])
+                print("%s" % hit["_source"]["@timestamp"])
+
+                #print("%s"hit["_source"]["path"] % )
+                #print("%s" % hit["_source"]["http"]["request"]["headers"])
+                #print("%s" % hit["_source"]["http"]["response"]["headers"])
+                print("%s" % hit["_source"]["http"]["response"]["code"])
+
+                if hit["_source"]["method"] == "POST":
+                    http.body()
+                    print("%s" % hit["_source"]["http"]["request"]["params"])
+
+                print("\n")
+
 
                 # Make comparison for error body od request data
                 # Compare with local database
