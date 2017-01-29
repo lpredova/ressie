@@ -16,6 +16,18 @@ class Hit(object):
 
         return None
 
+    def get_ip(self):
+        if self.hit["_source"]["client_ip"]:
+            return self.hit["_source"]["client_ip"]
+
+        return None
+
+    def get_response_time(self):
+        if self.hit["_source"]["responsetime"]:
+            return self.hit["_source"]["responsetime"]
+
+        return None
+
     def get_query(self):
         if self.hit["_source"]["query"]:
             return self.hit["_source"]["query"]

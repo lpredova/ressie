@@ -1,6 +1,12 @@
-# compare for standard html and SQL keywords
+import os
+
+import whoosh.index as index
+from whoosh.qparser import QueryParser
+
 
 class Http(object):
+    index_folder = os.getcwd() + "/data/index/"
+
     def number_requests(self, results):
         print("Number of requests")
 
@@ -14,17 +20,26 @@ class Http(object):
          '''
 
     def url(self, hit):
-        print("URL")
+        # CHECK IF SQL
+        print(hit.get_query())
 
     def body(self, hit):
-        print("Analyzing body")
-        print("check for sql keywords")
+        if hit.get_method() == "POST":
+            print ("POST METODA")
 
     def header(self, hit):
-        print("Analyzing header (length)")
+        print(hit.get_request_headers())
 
     def ip(self, hit):
-        print("Analyzing header (length)")
+        print(hit.get_ip())
 
     def response_time(self, hit):
-        print("Analyzing response time")
+        print(hit.get_response_time())
+
+    def check_attack_db(self, attack):
+        ix = index.open_dir(self.index_folder)
+        qp = QueryParser("lovrotestira", schema=ix.schema)
+        q = qp.parse(u"%s" % attack)
+
+        with ix.searcher() as s:
+            s.search(q, limit=20)
