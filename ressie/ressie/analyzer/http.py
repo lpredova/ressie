@@ -9,6 +9,7 @@ from ressie.database import Queries
 
 
 class Http(object):
+    average_threshold = 1.5
     index_folder = os.getcwd() + "/data/index/"
 
     def number_requests(self, hits):
@@ -19,7 +20,7 @@ class Http(object):
         if result['total'] >= 3:
 
             average = query.avg_requests()
-            if hits['hits']['total'] > average['average']:
+            if hits['hits']['total'] > (average['average'] * self.average_threshold):
                 mailer = Mailer()
                 slack = Slack()
 

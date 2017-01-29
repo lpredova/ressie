@@ -1,13 +1,13 @@
 import time
 
-import mysql as Mysql
+import mysql as mysql
 
 
 class Queries(object):
     db = None
 
     def __init__(self):
-        self.db = Mysql.MySql()
+        self.db = mysql.MySql()
 
     def avg_requests(self):
         query = "SELECT AVG(count) as average FROM ressie.request_counts"
