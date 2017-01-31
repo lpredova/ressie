@@ -1,13 +1,14 @@
 import decimal
 import os
-from difflib import SequenceMatcher
 
 import whoosh.index as index
 from whoosh.qparser import QueryParser
 
+from ip import IP
 from ressie.alerts.mail import Mailer
 from ressie.alerts.slack import Slack
 from ressie.database import Queries
+from ressie.helpers.helper import similar
 
 
 class Http(object):
@@ -67,14 +68,14 @@ class Http(object):
                 self.send_alert("URL blacklisted", hit)
 
     def ip(self, hit):
-        # check virus total
-        # TODO
         ip = hit.get_ip()
+        checker = IP()
         if ip:
-            print(ip)
+            if checker.check_ip_is_tor(ip):
+                self.send_alert("User with TOR spotted", hit)
 
-        #check TOR
-
+            if checker.check_ip_virus_total(ip):
+                self.send_alert("User from malicious IP spotted", hit)
 
     def response_time(self, hit):
         query = Queries()
@@ -104,15 +105,12 @@ class Http(object):
 
         with open(self.blacklist_folder + self.blacklist_file) as f:
             for line in f:
-                if self.similar(string, line) >= 0.6:
+
+                if similar(string, line) >= 0.6:
                     print("%s is blacklisted!" % string)
                     return True
 
         return False
-
-    # finding similar matches
-    def similar(self, a, b):
-        return SequenceMatcher(None, a, b).ratio()
 
     def check_attack_db(self, attack):
         ix = index.open_dir(self.index_folder)

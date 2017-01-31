@@ -1,3 +1,6 @@
+from difflib import SequenceMatcher
+
+
 def print_help():
     print "\n" \
           "Ressie is SIEM monitoring plugin for Elastic stack \n" \
@@ -16,3 +19,9 @@ def print_green(text):
 
 def print_red(text):
     print('\x1b[6;30;41m' + text + '\x1b[0m')
+
+    # finding similar matches
+
+
+def similar(a, b):
+    return SequenceMatcher(None, a, b).ratio()
