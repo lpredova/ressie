@@ -11,29 +11,28 @@ Ressie is open source SIEM component for ELK stack, it provides real time monito
 
 #### Contains
 * MySql 5.7 - https://hub.docker.com/_/mysql/
-* Postgres 9.5  - https://hub.docker.com/_/postgres/
-* Ubuntu + Php 5.6 + Apache 2
-* Ubuntu + NodeJs
-* Ubuntu + Python 2.7 + Django
+* Ubuntu + Php 5.6 + Apache 2 + (filebeat & networkbeat)
 * ElasticSearch 5 
 * Logstash 5 
 * Kibana 5
+* MySql 5.7 - ressie operational db
 
 #### Features
 * Custom alerting (email, slack..)
 * Indexed Fuzz DB for full text search attack database
 * Custom configuration of service 
+* Pattern matching
+* IP validation against TOR and VirusTotal
 
 **TODO**:
 
-* pattern matching
+* concurrent process
 * workers(queueing) support
 * machine learning implementation
 * suspicious usage monitor
 * TBD...
 
 ## Installation
-
 
 Navigate to project root
 
