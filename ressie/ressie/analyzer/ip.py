@@ -1,6 +1,5 @@
 import os
 import re
-import time
 
 import requests
 
@@ -53,17 +52,20 @@ class IP(object):
 
     def check_ip_virus_total(self, ip):
         # every 15s scan for ip
-        #time.sleep(15)
+        # time.sleep(15)
+        headers = {
+            "Accept-Encoding": "gzip, deflate",
+            "User-Agent": "gzip,  Ressie SIEM"
+        }
+        url = "http://www.virustotal.com/vtapi/v2/url/report"
+        parameters = {'resource': ip, 'apikey': self.v_total_key}
 
         try:
-            url = "https://www.virustotal.com/vtapi/v2/ip-address/report"
-            parameters = {'ip': ip, 'apikey': self.v_total_key}
-
-            r = requests.get(url, params=parameters)
-            response = r.json()
-
-            if len(response['detected_urls']) > 3:
-                return True
+            r = requests.post(url, params=parameters, headers=headers)
+            if 200 <= r.status_code < 400:
+                response = r.json()
+                if response['positives'] > 0:
+                    return True
 
             return False
 
