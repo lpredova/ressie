@@ -20,3 +20,7 @@ class Queries(object):
     def number_of_requests(self):
         query = "SELECT COUNT(count) as total FROM ressie.request_counts"
         return self.db.execute_query(query)
+
+    def insert_avg_response_times(self, average):
+        query = "INSERT INTO ressie.response_times VALUES (DEFAULT,%d,%d);" % (average, int(time.time()))
+        self.db.insert_query(query)

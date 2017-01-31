@@ -49,12 +49,13 @@ class ElasticQuery(object):
 
         start = time.clock()
         try:
-            res = es.search(index=index_date, body=query)
+            results = es.search(index=index_date, body=query)
 
             http_analyzer = Http()
-            http_analyzer.number_requests(res)
+            http_analyzer.number_requests(results)
+            response_times = average = 0
 
-            for hit in res['hits']['hits']:
+            for hit in results['hits']['hits']:
                 elastic_hit = Hit()
                 elastic_hit.set_hit(hit)
 
@@ -63,6 +64,14 @@ class ElasticQuery(object):
                 http_analyzer.header(elastic_hit)
                 http_analyzer.ip(elastic_hit)
                 http_analyzer.response_time(elastic_hit)
+
+                response_times += elastic_hit.get_response_time()
+
+            if results['hits']['total'] > 0:
+                average = response_times / results['hits']['total']
+
+            if average > 0:
+                http_analyzer.handle_average(average)
 
             end = time.clock()
             print("Evaluation done in: %f" % (end - start))

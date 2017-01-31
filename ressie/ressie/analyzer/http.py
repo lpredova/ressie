@@ -78,7 +78,7 @@ class Http(object):
         # check average response time
         # TODO
 
-        print(hit.get_response_time())
+        print("%dms" % (hit.get_response_time()))
 
     def check_for_sql_and_js(self, string):
         if any(st in string for st in self.sql) or any(st in string for st in self.js):
@@ -113,7 +113,7 @@ class Http(object):
         payload = message
         mailer = Mailer()
         slack = Slack()
-        
+
         if hit:
             formatted_msg = hit.get_pretty_print()
             payload = message + '\n' + formatted_msg
@@ -121,3 +121,7 @@ class Http(object):
         mailer.send_message(payload)
         slack.send_message(payload)
         print(message + "\n Alerts sent!")
+
+    def handle_average(self, average):
+        query = Queries()
+        query.insert_avg_response_times(average)
