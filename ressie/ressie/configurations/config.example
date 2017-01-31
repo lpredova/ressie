@@ -8,3 +8,6 @@ privateKey : private-key
 domain : sandboxSOMENUMBERS.mailgun.org
 authorized_recipient: mailgun_authorized_recipient@recipient.com
 
+[VirusTotal]
+api_key: this-is-my-v-total-key
+

@@ -2,6 +2,7 @@ import sys
 
 import alerts.mail as mailer
 import alerts.slack as slack
+import analyzer.ip as ip
 import helpers.helper as helper
 import indexes.indexer as index
 import queries.query as query
@@ -14,6 +15,11 @@ def main(args=None):
 
     try:
         param = args[0]
+        if param == "tor":
+            tor = ip.IP()
+            tor.fetch_tor_exit_nodes()
+            tor.fetch_ip_addresses_from_file()
+
         if param == "search":
             elastic = query.ElasticQuery()
             elastic.check_status()
