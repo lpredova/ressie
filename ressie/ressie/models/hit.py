@@ -1,3 +1,6 @@
+import json
+
+
 class Hit(object):
     hit = None
 
@@ -79,5 +82,6 @@ class Hit(object):
     def get_pretty_print(self):
 
         return (
-            "%s %s \n %s \n %s" % (
-                self.get_method(), self.get_path(), self.get_request_headers(), self.get_request_body()))
+            "%s %s \n:arrow_right: %s \n :arrow_left: %s" % (
+                self.get_method(), self.get_path(), json.dumps(self.get_request(), ensure_ascii=False),
+                json.dumps(self.get_response(), ensure_ascii=False)))
