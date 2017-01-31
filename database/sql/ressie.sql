@@ -58,6 +58,17 @@ CREATE TABLE IF NOT EXISTS `ressie`.`request_length` (
 )
   ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `ressie`.`response_times`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ressie`.`response_times` (
+  `id`        INT NOT NULL AUTO_INCREMENT,
+  `time`    INT NOT NULL,
+  `createdAt` INT NOT NULL,
+  PRIMARY KEY (`id`)
+)
+  ENGINE = InnoDB;
+
 SET SQL_MODE = @OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS = @OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS = @OLD_UNIQUE_CHECKS;

@@ -14,6 +14,7 @@ class Http(object):
     sql = ['select', 'delete', 'update', 'insert', 'join', 'where', 'values', 'from', '#', '--']
     js = ['<script>', 'alert(', 'window.']
 
+    alarming = False
     average_threshold = 1.5
     index_folder = os.getcwd() + "/data/index/"
     blacklist_folder = os.getcwd() + "/data/custom/"
@@ -75,10 +76,15 @@ class Http(object):
             print(ip)
 
     def response_time(self, hit):
-        # check average response time
-        # TODO
+        query = Queries()
+        average = query.avg_response_times()['average']
+        response_time = hit.get_response_time()
 
-        print(hit.get_response_time())
+        avg = decimal.Decimal(average) * decimal.Decimal(self.average_threshold)
+        if avg <= decimal.Decimal(response_time):
+            self.send_alert("Response is taking unusually long (%d ms)" % response_time, hit)
+
+        print("%dms" % (hit.get_response_time()))
 
     def check_for_sql_and_js(self, string):
         if any(st in string for st in self.sql) or any(st in string for st in self.js):
@@ -110,14 +116,21 @@ class Http(object):
 
     def send_alert(self, message, hit):
 
-        payload = message
-        mailer = Mailer()
-        slack = Slack()
-        
-        if hit:
-            formatted_msg = hit.get_pretty_print()
-            payload = message + '\n' + formatted_msg
+        if self.alarming:
+            payload = message
+            mailer = Mailer()
+            slack = Slack()
 
-        mailer.send_message(payload)
-        slack.send_message(payload)
-        print(message + "\n Alerts sent!")
+            if hit:
+                formatted_msg = hit.get_pretty_print()
+                payload = message + '\n' + formatted_msg
+
+            mailer.send_message(payload)
+            slack.send_message(payload)
+            print(message + "\n Alerts sent!")
+        else:
+            print("Silent alarm...")
+
+    def handle_average(self, average):
+        query = Queries()
+        query.insert_avg_response_times(average)
