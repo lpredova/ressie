@@ -37,13 +37,12 @@ class Http(object):
 
     def url(self, hit):
         url = hit.get_path()
-
-        # check url for js and sql
         if url and not (self.check_for_sql_and_js(url)):
-
             if self.check_blacklist(url):
                 self.send_alert("URL blacklisted", hit)
-                print("NEKOREKTAN URL")
+
+        else:
+            self.send_alert("SQL or JS detected in url", hit)
 
     def body(self, hit):
         if hit.get_method() == "POST":
@@ -58,15 +57,14 @@ class Http(object):
                 print ("POST NESTO NE VALAJ")
 
     def header(self, hit):
-        print(hit.get_request_headers())
-
         header = hit.get_request_headers()
 
         for field in header:
-            # provjeri polje po polje
-            # TODO
-            if self.check_for_sql_and_js(field):
-                print(field)
+            if self.check_for_sql_and_js(header[field]):
+                self.send_alert("SQL or JS detected in header", hit)
+
+            if self.check_blacklist(header[field]):
+                self.send_alert("URL blacklisted", hit)
 
     def ip(self, hit):
         # check virus total
@@ -74,6 +72,9 @@ class Http(object):
         ip = hit.get_ip()
         if ip:
             print(ip)
+
+        #check TOR
+
 
     def response_time(self, hit):
         query = Queries()
@@ -87,12 +88,19 @@ class Http(object):
         print("%dms" % (hit.get_response_time()))
 
     def check_for_sql_and_js(self, string):
+
+        if not string:
+            return False
+
         if any(st in string for st in self.sql) or any(st in string for st in self.js):
             return True
 
         return False
 
     def check_blacklist(self, string):
+
+        if not string:
+            return False
 
         with open(self.blacklist_folder + self.blacklist_file) as f:
             for line in f:
@@ -129,7 +137,7 @@ class Http(object):
             slack.send_message(payload)
             print(message + "\n Alerts sent!")
         else:
-            print("Silent alarm...")
+            print("\n%s\n" % message)
 
     def handle_average(self, average):
         query = Queries()
