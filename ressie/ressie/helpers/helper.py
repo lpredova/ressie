@@ -13,14 +13,20 @@ def print_help():
           ""
 
 
+def format_green(text):
+    return '\x1b[6;30;42m' + text + '\x1b[0m'
+
+
 def print_green(text):
     print('\x1b[6;30;42m' + text + '\x1b[0m')
 
 
+def format_red(text):
+    return '\x1b[6;30;41m' + text + '\x1b[0m'
+
+
 def print_red(text):
     print('\x1b[6;30;41m' + text + '\x1b[0m')
-
-    # finding similar matches
 
 
 def similar(a, b):

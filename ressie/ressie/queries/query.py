@@ -6,6 +6,7 @@ import time
 from elasticsearch import Elasticsearch
 
 from ressie.analyzer.http import Http
+from ressie.helpers import *
 from ressie.models import Hit
 
 
@@ -77,14 +78,38 @@ class ElasticQuery(object):
         elastic_hit = Hit()
         elastic_hit.set_hit(hit)
 
-        http_analyzer.url(elastic_hit)
-        http_analyzer.body(elastic_hit)
-        http_analyzer.header(elastic_hit)
-        http_analyzer.ip(elastic_hit)
-        http_analyzer.response_time(elastic_hit)
+        status = []
+        result = http_analyzer.url(elastic_hit)
+        if not isinstance(result, bool):
+            status.append(format_red(result))
+        else:
+            status.append(format_green("OK"))
 
-        print("%d.\t %s - %s" % (index, elastic_hit.get_response_code(), elastic_hit.get_path()))
+        result = http_analyzer.body(elastic_hit)
+        if not isinstance(result, bool):
+            status.append(format_red(result))
+        else:
+            status.append(format_green("OK"))
 
+        result = http_analyzer.header(elastic_hit)
+        if not isinstance(result, bool):
+            status.append(format_red(result))
+        else:
+            status.append(format_green("OK"))
+
+        result = http_analyzer.ip(elastic_hit)
+        if not isinstance(result, bool):
+            status.append(format_red(result))
+        else:
+            status.append(format_green("OK"))
+
+        result = http_analyzer.response_time(elastic_hit)
+        if not isinstance(result, bool):
+            status.append(format_red(result))
+        else:
+            status.append(format_green("OK"))
+
+        print("%d.\t%s-%s\t%s" % (index, elastic_hit.get_response_code(), elastic_hit.get_path(), ' '.join(status)))
         response_time = elastic_hit.get_response_time()
         if response_time:
             self.response_times += response_time

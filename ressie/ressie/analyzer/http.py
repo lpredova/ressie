@@ -32,10 +32,16 @@ class Http(object):
         url = hit.get_path()
         if url and not (self.check.check_for_sql_and_js(url)):
             if self.check.check_blacklist(url):
-                self.check.send_alert("URL blacklisted", hit)
+                msg = "URL blacklisted"
+                self.check.send_alert(msg, hit)
+                return msg
 
         else:
-            self.check.send_alert("SQL or JS detected in url", hit)
+            msg = "SQL or JS detected in url"
+            self.check.send_alert(msg, hit)
+            return msg
+
+        return True
 
     def body(self, hit):
         if hit.get_method() == "POST":
@@ -49,25 +55,40 @@ class Http(object):
             else:
                 print ("POST NESTO NE VALAJ")
 
+        return True
+
+
     def header(self, hit):
         header = hit.get_request_headers()
 
         for field in header:
             if self.check.check_for_sql_and_js(header[field]):
-                self.check.send_alert("SQL or JS detected in header", hit)
+                msg = "SQL or JS detected in header"
+                self.check.send_alert(msg, hit)
+                return msg
 
             if self.check.check_blacklist(header[field]):
-                self.check.send_alert("URL blacklisted", hit)
+                msg = "URL blacklisted"
+                self.check.send_alert(msg, hit)
+                return msg
+
+        return True
 
     def ip(self, hit):
         ip = hit.get_ip()
         checker = IP()
         if ip:
             if checker.check_ip_is_tor(ip):
-                self.check.send_alert("User with TOR spotted", hit)
+                msg = "User with TOR spotted"
+                self.check.send_alert(msg, hit)
+                return msg
 
             if checker.check_ip_virus_total(ip):
-                self.check.send_alert("User from malicious IP spotted", hit)
+                msg = "User from malicious IP spotted"
+                self.check.send_alert(msg, hit)
+                return msg
+
+        return True
 
     def response_time(self, hit):
         query = Queries()
@@ -77,11 +98,15 @@ class Http(object):
             response_time = hit.get_response_time()
 
             if not response_time:
-                return
+                return True
 
             avg = decimal.Decimal(average) * decimal.Decimal(self.average_threshold)
             if avg and avg <= decimal.Decimal(response_time):
-                self.check.send_alert("Response is taking unusually long (%d ms)" % response_time, hit)
+                msg = "Response is taking unusually long (%d ms)" % response_time, hit
+                self.check.send_alert(msg)
+                return msg
+
+        return True
 
     def handle_average(self, average):
         self.check.handle_average(average)
