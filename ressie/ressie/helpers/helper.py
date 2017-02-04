@@ -13,6 +13,14 @@ def print_help():
           ""
 
 
+def format_yellow(text):
+    return '\x1b[6;30;43m' + text + '\x1b[0m'
+
+
+def print_yellow(text):
+    print('\x1b[6;30;43m' + text + '\x1b[0m')
+
+
 def format_green(text):
     return '\x1b[6;30;42m' + text + '\x1b[0m'
 

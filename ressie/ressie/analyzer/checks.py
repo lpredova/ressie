@@ -24,6 +24,7 @@ class Check(object):
             return False
 
         if any(st in string for st in self.sql) or any(st in string for st in self.js):
+            print_red("%s is forbidden keyword" % string)
             return True
 
         return False
@@ -67,10 +68,10 @@ class Check(object):
             else:
                 if message:
                     print("\n")
-                    print_red("Alert sent in simulation mode")
+                    print_yellow("Alert sent in simulation mode")
                     print("\n")
                 else:
-                    print_red("\nError spotted in sending\n")
+                    print_yellow("\nError spotted in sending\n")
 
         except Exception as e:
             print(e.message)

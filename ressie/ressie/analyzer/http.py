@@ -41,15 +41,6 @@ class Http(object):
             self.check.send_alert(msg, hit)
             return msg
 
-        # parse each param in url
-        '''
-        try:
-            url = url.split('/')
-            print url
-        except Exception as e:
-            print(e.message)
-        '''
-
         return True
 
     def body(self, hit):
@@ -63,6 +54,46 @@ class Http(object):
 
             else:
                 print ("POST NESTO NE VALAJ")
+
+        if hit.get_method() == "GET":
+            try:
+                body = hit.get_request_body()
+                if "&" in body:
+                    url = body.split("&")
+                    for param in url:
+                        if "=" in param:
+                            value = param.split("=")
+                            if value[1] and value[1] != '':
+                                if self.check.check_blacklist(value[1]):
+                                    msg = "query param blacklisted"
+                                    self.check.send_alert(msg, hit)
+                                    return msg
+
+                                if self.check.check_for_sql_and_js(value[1]):
+                                    msg = "SQL or JS detected in url"
+                                    self.check.send_alert(msg, hit)
+                                    return msg
+
+                                print value[1]
+
+                else:
+                    if "=" in body:
+                        value = body.split("=")
+                        if value[1] and value[1] != '':
+                            if self.check.check_blacklist(value[1]):
+                                msg = "query param blacklisted"
+                                self.check.send_alert(msg, hit)
+                                return msg
+
+                            if self.check.check_for_sql_and_js(value[1]):
+                                msg = "SQL or JS detected in url"
+                                self.check.send_alert(msg, hit)
+                                return msg
+
+
+                                # url = url.split('?')
+            except Exception as e:
+                print(e.message)
 
         return True
 
