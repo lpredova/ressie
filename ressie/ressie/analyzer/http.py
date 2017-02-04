@@ -57,7 +57,6 @@ class Http(object):
 
         return True
 
-
     def header(self, hit):
         header = hit.get_request_headers()
 

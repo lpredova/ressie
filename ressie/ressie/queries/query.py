@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import datetime
 import time
+from threading import Thread, current_thread
 
 from elasticsearch import Elasticsearch
 
@@ -52,14 +53,13 @@ class ElasticQuery(object):
         start = time.clock()
         try:
             results = es.search(index=index_date, body=query)
-
             http_analyzer = Http()
             http_analyzer.number_requests(results)
-            idx = 0
 
             for hit in results['hits']['hits']:
-                idx += 1
-                self.run_evaluation(idx, hit, http_analyzer)
+                thread = Thread(target=self.run_evaluation, args=(hit, http_analyzer))
+                thread.start()
+                thread.join()
 
             if results['hits']['total'] > 0:
                 average = self.response_times / results['hits']['total']
@@ -74,7 +74,7 @@ class ElasticQuery(object):
             print("Evaluation done in: %f" % (end - start))
             print(e.message)
 
-    def run_evaluation(self, index, hit, http_analyzer):
+    def run_evaluation(self, hit, http_analyzer):
         elastic_hit = Hit()
         elastic_hit.set_hit(hit)
 
@@ -109,7 +109,8 @@ class ElasticQuery(object):
         else:
             status.append(format_green("OK"))
 
-        print("%d.\t%s-%s\t%s" % (index, elastic_hit.get_response_code(), elastic_hit.get_path(), ' '.join(status)))
+        print("%s.\t%s-%s\t%s" % (current_thread().getName(), elastic_hit.get_response_code(), elastic_hit.get_path(),
+                                  ' '.join(status)))
         response_time = elastic_hit.get_response_time()
         if response_time:
             self.response_times += response_time

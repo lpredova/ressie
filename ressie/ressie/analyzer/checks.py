@@ -6,7 +6,7 @@ from whoosh.qparser import QueryParser
 from ressie.alerts.mail import Mailer
 from ressie.alerts.slack import Slack
 from ressie.database import Queries
-from ressie.helpers.helper import similar
+from ressie.helpers.helper import *
 
 
 class Check(object):
@@ -36,7 +36,7 @@ class Check(object):
             for line in f:
 
                 if similar(string, line) >= 0.6:
-                    print("%s is blacklisted!" % string)
+                    print_red("\n%s is blacklisted!" % string)
                     return True
 
         return False
@@ -61,9 +61,9 @@ class Check(object):
 
             mailer.send_message(payload)
             slack.send_message(payload)
-            print(message + "\n Alerts sent!")
+            print_green(message + "\n Alerts sent!")
         else:
-            print("\n%s\n" % message)
+            print_red("\n%s\n" % message)
 
     def handle_average(self, average):
         query = Queries()
