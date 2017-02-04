@@ -109,8 +109,8 @@ class ElasticQuery(object):
         else:
             status.append(format_green("OK"))
 
-        print("%s.\t%s-%s\t%s" % (current_thread().getName(), elastic_hit.get_response_code(), elastic_hit.get_path(),
-                                  ' '.join(status)))
+        print("%s.\t%s %s ->%s\t%s" % (current_thread().getName(), elastic_hit.get_method(),
+                                     elastic_hit.get_path(), elastic_hit.get_response_code(), ' '.join(status)))
         response_time = elastic_hit.get_response_time()
         if response_time:
             self.response_times += response_time

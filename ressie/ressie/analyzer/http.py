@@ -48,12 +48,26 @@ class Http(object):
 
             body = hit.get_request_body()
             if body and not (self.check.check_for_sql_and_js(body)):
-                # check fuzz db
-                # TODO
-                print ("POST METODA")
+                if "&" in body:
+                    url = body.split("&")
+                    for param in url:
+                        if "=" in param:
+                            value = param.split("=")
+                            if value[1] and value[1] != '':
+                                if self.check.check_blacklist(value[1]):
+                                    msg = "query param blacklisted"
+                                    self.check.send_alert(msg, hit)
+                                    return msg
+
+                                if self.check.check_for_sql_and_js(value[1]):
+                                    msg = "SQL or JS detected in url"
+                                    self.check.send_alert(msg, hit)
+                                    return msg
 
             else:
-                print ("POST NESTO NE VALAJ")
+                msg = "SQL or JS detected in body"
+                self.check.send_alert(msg, hit)
+                return msg
 
         if hit.get_method() == "GET":
             try:
