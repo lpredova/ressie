@@ -74,8 +74,6 @@ class Http(object):
                                     self.check.send_alert(msg, hit)
                                     return msg
 
-                                print value[1]
-
                 else:
                     if "=" in body:
                         value = body.split("=")
@@ -90,8 +88,6 @@ class Http(object):
                                 self.check.send_alert(msg, hit)
                                 return msg
 
-
-                                # url = url.split('?')
             except Exception as e:
                 print(e.message)
 
@@ -101,15 +97,17 @@ class Http(object):
         header = hit.get_request_headers()
 
         for field in header:
-            if self.check.check_for_sql_and_js(header[field]):
-                msg = "SQL or JS detected in header"
-                self.check.send_alert(msg, hit)
-                return msg
 
-            if self.check.check_blacklist(header[field]):
-                msg = "URL blacklisted"
-                self.check.send_alert(msg, hit)
-                return msg
+            if not self.check.check_for_valid_headers(header[field]):
+                if self.check.check_for_sql_and_js(header[field]):
+                    msg = "SQL or JS detected in header"
+                    self.check.send_alert(msg, hit)
+                    return msg
+
+                if self.check.check_blacklist(header[field]):
+                    msg = "URL blacklisted"
+                    self.check.send_alert(msg, hit)
+                    return msg
 
         return True
 

@@ -39,3 +39,12 @@ def print_red(text):
 
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
+
+
+def is_number(s):
+    try:
+        complex(s)  # for int, long, float and complex
+    except ValueError:
+        return False
+
+    return True

@@ -12,6 +12,7 @@ from ressie.helpers.helper import *
 class Check(object):
     sql = ['select', 'delete', 'update', 'insert', 'join', 'where', 'values', 'from', '#', '--']
     js = ['<script>', 'alert(', 'window.']
+    valid_headers = ['application/x-www-form-urlencoded']
 
     alarming = False
     average_threshold = 1.5
@@ -19,28 +20,49 @@ class Check(object):
     blacklist_folder = os.getcwd() + "/data/custom/"
     blacklist_file = "blacklist.txt"
 
-    def check_for_sql_and_js(self, string):
-        if not string:
+    def check_for_valid_headers(self, string):
+
+        try:
+            if not string:
+                return False
+
+            if any(st in string for st in self.valid_headers):
+                return True
+
             return False
 
-        if any(st in string for st in self.sql) or any(st in string for st in self.js):
-            print_red("%s is forbidden keyword" % string)
-            return True
+        except Exception as e:
+            return False
 
-        return False
+    def check_for_sql_and_js(self, string):
+        try:
+            if not string:
+                return False
+
+            if any(st in string for st in self.sql) or any(st in string for st in self.js):
+                print_red("%s is forbidden keyword" % string)
+                return True
+
+            return False
+        except Exception as e:
+            return False
 
     def check_blacklist(self, string):
-        if not string:
+
+        try:
+            if not string:
+                return False
+
+            with open(self.blacklist_folder + self.blacklist_file) as f:
+                for line in f:
+
+                    if similar(string, line) >= 0.6:
+                        print_red("\n%s is blacklisted!" % string)
+                        return True
+
             return False
-
-        with open(self.blacklist_folder + self.blacklist_file) as f:
-            for line in f:
-
-                if similar(string, line) >= 0.6:
-                    print_red("\n%s is blacklisted!" % string)
-                    return True
-
-        return False
+        except Exception as e:
+            return False
 
     def check_attack_db(self, string):
         ix = index.open_dir(self.index_folder)
