@@ -51,6 +51,8 @@ class IP(object):
         return False
 
     def check_ip_virus_total(self, ip):
+
+        return False
         # every 15s scan for ip
         # time.sleep(15)
         headers = {

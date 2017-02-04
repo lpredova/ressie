@@ -2,6 +2,7 @@ import sys
 
 import alerts.mail as mailer
 import alerts.slack as slack
+import analyzer.checks as check
 import analyzer.ip as ip
 import helpers.helper as helper
 import indexes.indexer as index
@@ -9,7 +10,6 @@ import queries.query as query
 
 
 def main(args=None):
-    """The main routine."""
     if args is None:
         args = sys.argv[1:]
 
@@ -19,6 +19,10 @@ def main(args=None):
             tor = ip.IP()
             tor.fetch_tor_exit_nodes()
             tor.fetch_ip_addresses_from_file()
+
+        if param == "find":
+            c = check.Check()
+            result = c.check_attack_db("wordpress")
 
         if param == "search":
             elastic = query.ElasticQuery()

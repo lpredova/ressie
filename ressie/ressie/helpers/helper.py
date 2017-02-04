@@ -13,15 +13,38 @@ def print_help():
           ""
 
 
+def format_yellow(text):
+    return '\x1b[6;30;43m' + text + '\x1b[0m'
+
+
+def print_yellow(text):
+    print('\x1b[6;30;43m' + text + '\x1b[0m')
+
+
+def format_green(text):
+    return '\x1b[6;30;42m' + text + '\x1b[0m'
+
+
 def print_green(text):
     print('\x1b[6;30;42m' + text + '\x1b[0m')
+
+
+def format_red(text):
+    return '\x1b[6;30;41m' + text + '\x1b[0m'
 
 
 def print_red(text):
     print('\x1b[6;30;41m' + text + '\x1b[0m')
 
-    # finding similar matches
-
 
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
+
+
+def is_number(s):
+    try:
+        complex(s)  # for int, long, float and complex
+    except ValueError:
+        return False
+
+    return True
