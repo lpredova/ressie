@@ -12,6 +12,7 @@ from ressie.models import Hit
 class ElasticQuery(object):
     # in minutes
     time_threshold = 200000
+    response_times = average = 0
 
     def __init__(self):
         pass
@@ -53,9 +54,10 @@ class ElasticQuery(object):
 
             http_analyzer = Http()
             http_analyzer.number_requests(results)
-            response_times = average = 0
+            response_times = average = idx = 0
 
             for hit in results['hits']['hits']:
+                idx += 1
                 elastic_hit = Hit()
                 elastic_hit.set_hit(hit)
 
@@ -65,12 +67,16 @@ class ElasticQuery(object):
                 http_analyzer.ip(elastic_hit)
                 http_analyzer.response_time(elastic_hit)
 
-                response_times += elastic_hit.get_response_time()
+                # response_times += elastic_hit.get_response_time()
+
+                print("%d.\t %s - %s" % (idx, elastic_hit.get_response_code(), elastic_hit.get_path()))
+
 
             if results['hits']['total'] > 0:
-                average = response_times / results['hits']['total']
+                # average = response_times / results['hits']['total']
 
-            if average > 0:
+
+                # if average > 0:
                 http_analyzer.handle_average(average)
 
             end = time.clock()
@@ -80,3 +86,14 @@ class ElasticQuery(object):
             end = time.clock()
             print("Evaluation done in: %f" % (end - start))
             print(e.message)
+
+    def run_evaluation(self, hit, http_analyzer):
+        elastic_hit = Hit()
+        elastic_hit.set_hit(hit)
+
+        http_analyzer.url(elastic_hit)
+        http_analyzer.body(elastic_hit)
+        http_analyzer.header(elastic_hit)
+        http_analyzer.ip(elastic_hit)
+        http_analyzer.response_time(elastic_hit)
+        self.response_times += elastic_hit.get_response_time()

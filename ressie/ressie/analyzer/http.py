@@ -1,25 +1,17 @@
 import decimal
-import os
 
-import whoosh.index as index
-from whoosh.qparser import QueryParser
-
+from checks import Check
 from ip import IP
-from ressie.alerts.mail import Mailer
-from ressie.alerts.slack import Slack
 from ressie.database import Queries
-from ressie.helpers.helper import similar
 
 
 class Http(object):
-    sql = ['select', 'delete', 'update', 'insert', 'join', 'where', 'values', 'from', '#', '--']
-    js = ['<script>', 'alert(', 'window.']
-
-    alarming = False
+    check = None
     average_threshold = 1.5
-    index_folder = os.getcwd() + "/data/index/"
-    blacklist_folder = os.getcwd() + "/data/custom/"
-    blacklist_file = "blacklist.txt"
+
+    def __init__(self):
+        super(Http, self).__init__()
+        self.check = Check()
 
     def number_requests(self, hits):
         query = Queries()
@@ -32,24 +24,24 @@ class Http(object):
             threshold = decimal.Decimal(average) * decimal.Decimal(self.average_threshold)
 
             if hits['hits']['total'] > threshold:
-                self.send_alert("Number of requests suspiciously high", None)
+                self.check.send_alert("Number of requests suspiciously high", None)
 
         query.insert_requests(hits['hits']['total'])
 
     def url(self, hit):
         url = hit.get_path()
-        if url and not (self.check_for_sql_and_js(url)):
-            if self.check_blacklist(url):
-                self.send_alert("URL blacklisted", hit)
+        if url and not (self.check.check_for_sql_and_js(url)):
+            if self.check.check_blacklist(url):
+                self.check.send_alert("URL blacklisted", hit)
 
         else:
-            self.send_alert("SQL or JS detected in url", hit)
+            self.check.send_alert("SQL or JS detected in url", hit)
 
     def body(self, hit):
         if hit.get_method() == "POST":
 
             body = hit.get_request_body()
-            if body and not (self.check_for_sql_and_js(body)):
+            if body and not (self.check.check_for_sql_and_js(body)):
                 # check fuzz db
                 # TODO
                 print ("POST METODA")
@@ -61,82 +53,35 @@ class Http(object):
         header = hit.get_request_headers()
 
         for field in header:
-            if self.check_for_sql_and_js(header[field]):
-                self.send_alert("SQL or JS detected in header", hit)
+            if self.check.check_for_sql_and_js(header[field]):
+                self.check.send_alert("SQL or JS detected in header", hit)
 
-            if self.check_blacklist(header[field]):
-                self.send_alert("URL blacklisted", hit)
+            if self.check.check_blacklist(header[field]):
+                self.check.send_alert("URL blacklisted", hit)
 
     def ip(self, hit):
         ip = hit.get_ip()
         checker = IP()
         if ip:
             if checker.check_ip_is_tor(ip):
-                self.send_alert("User with TOR spotted", hit)
+                self.check.send_alert("User with TOR spotted", hit)
 
             if checker.check_ip_virus_total(ip):
-                self.send_alert("User from malicious IP spotted", hit)
+                self.check.send_alert("User from malicious IP spotted", hit)
 
     def response_time(self, hit):
         query = Queries()
         average = query.avg_response_times()['average']
-        response_time = hit.get_response_time()
 
-        avg = decimal.Decimal(average) * decimal.Decimal(self.average_threshold)
-        if avg <= decimal.Decimal(response_time):
-            self.send_alert("Response is taking unusually long (%d ms)" % response_time, hit)
+        if average:
+            response_time = hit.get_response_time()
 
-        print("%dms" % (hit.get_response_time()))
+            if not response_time:
+                return
 
-    def check_for_sql_and_js(self, string):
-
-        if not string:
-            return False
-
-        if any(st in string for st in self.sql) or any(st in string for st in self.js):
-            return True
-
-        return False
-
-    def check_blacklist(self, string):
-
-        if not string:
-            return False
-
-        with open(self.blacklist_folder + self.blacklist_file) as f:
-            for line in f:
-
-                if similar(string, line) >= 0.6:
-                    print("%s is blacklisted!" % string)
-                    return True
-
-        return False
-
-    def check_attack_db(self, attack):
-        ix = index.open_dir(self.index_folder)
-        qp = QueryParser("lovrotestira", schema=ix.schema)
-        q = qp.parse(u"%s" % attack)
-
-        with ix.searcher() as s:
-            s.search(q, limit=20)
-
-    def send_alert(self, message, hit):
-
-        if self.alarming:
-            payload = message
-            mailer = Mailer()
-            slack = Slack()
-
-            if hit:
-                formatted_msg = hit.get_pretty_print()
-                payload = message + '\n' + formatted_msg
-
-            mailer.send_message(payload)
-            slack.send_message(payload)
-            print(message + "\n Alerts sent!")
-        else:
-            print("\n%s\n" % message)
+            avg = decimal.Decimal(average) * decimal.Decimal(self.average_threshold)
+            if avg and avg <= decimal.Decimal(response_time):
+                self.check.send_alert("Response is taking unusually long (%d ms)" % response_time, hit)
 
     def handle_average(self, average):
-        query = Queries()
-        query.insert_avg_response_times(average)
+        self.check.handle_average(average)
