@@ -9,7 +9,6 @@ import queries.query as query
 
 
 def main(args=None):
-    """The main routine."""
     if args is None:
         args = sys.argv[1:]
 

@@ -27,7 +27,7 @@ class Mailer(object):
         )
 
         if response.status_code == 200:
-            print("Queued. Thank you.")
+            print("Mail queued.")
 
         else:
             print("Ooops something went wrong with sending alert mail: \n %s", response.text)

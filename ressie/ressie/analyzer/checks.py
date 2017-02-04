@@ -41,29 +41,39 @@ class Check(object):
 
         return False
 
-    def check_attack_db(self, attack):
+    def check_attack_db(self, string):
         ix = index.open_dir(self.index_folder)
-        qp = QueryParser("lovrotestira", schema=ix.schema)
-        q = qp.parse(u"%s" % attack)
+        qp = QueryParser(string, schema=ix.schema)
+        q = qp.parse(u"%s" % string)
 
         with ix.searcher() as s:
             s.search(q, limit=20)
+            print(s)
 
     def send_alert(self, message, hit):
-        if self.alarming:
-            payload = message
-            mailer = Mailer()
-            slack = Slack()
+        try:
+            if self.alarming:
+                payload = message
+                mailer = Mailer()
+                slack = Slack()
 
-            if hit:
-                formatted_msg = hit.get_pretty_print()
-                payload = message + '\n' + formatted_msg
+                if hit:
+                    formatted_msg = hit.get_pretty_print()
+                    payload = message + '\n' + formatted_msg
 
-            mailer.send_message(payload)
-            slack.send_message(payload)
-            print_green(message + "\n Alerts sent!")
-        else:
-            print_red("\n%s\n" % message)
+                mailer.send_message(payload)
+                slack.send_message(payload)
+                print_green(message + "\n Alerts sent!")
+            else:
+                if message:
+                    print("\n")
+                    print_red("Alert sent in simulation mode")
+                    print("\n")
+                else:
+                    print_red("\nError spotted in sending\n")
+
+        except Exception as e:
+            print(e.message)
 
     def handle_average(self, average):
         query = Queries()

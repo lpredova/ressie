@@ -67,11 +67,11 @@ class ElasticQuery(object):
                     http_analyzer.handle_average(average)
 
             end = time.clock()
-            print("Evaluation done in: %f" % (end - start))
+            print("\nEvaluation done in: %fms" % (end - start))
 
         except Exception as e:
             end = time.clock()
-            print("Evaluation done in: %f" % (end - start))
+            print("\nEvaluation done in: %fms" % (end - start))
             print(e.message)
 
     def run_evaluation(self, hit, http_analyzer):

@@ -41,6 +41,15 @@ class Http(object):
             self.check.send_alert(msg, hit)
             return msg
 
+        # parse each param in url
+        '''
+        try:
+            url = url.split('/')
+            print url
+        except Exception as e:
+            print(e.message)
+        '''
+
         return True
 
     def body(self, hit):
@@ -95,15 +104,12 @@ class Http(object):
 
         if average:
             response_time = hit.get_response_time()
-
-            if not response_time:
-                return True
-
-            avg = decimal.Decimal(average) * decimal.Decimal(self.average_threshold)
-            if avg and avg <= decimal.Decimal(response_time):
-                msg = "Response is taking unusually long (%d ms)" % response_time, hit
-                self.check.send_alert(msg)
-                return msg
+            if response_time:
+                avg = decimal.Decimal(average) * decimal.Decimal(self.average_threshold)
+                if avg and avg <= decimal.Decimal(response_time):
+                    msg = "Response is taking unusually long (%d ms)" % response_time
+                    self.check.send_alert(msg, hit)
+                    return msg
 
         return True
 
