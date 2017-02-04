@@ -13,7 +13,7 @@ from ressie.models import Hit
 
 class ElasticQuery(object):
     # in minutes
-    time_threshold = 60
+    time_threshold = 80
     response_times = average = 0
     fine = 0
 
@@ -26,6 +26,7 @@ class ElasticQuery(object):
     def elasticsearch(self):
 
         query = {
+            "size": 1000,
             "query": {
                 "bool": {
                     "must": [
@@ -86,48 +87,53 @@ class ElasticQuery(object):
         elastic_hit = Hit()
         elastic_hit.set_hit(hit)
 
-        healty = True
+        healthy = True
         status = []
         result = http_analyzer.url(elastic_hit)
         if not isinstance(result, bool):
-            healty = False
+            healthy = False
             status.append(format_red(result))
         else:
             status.append(format_green("OK"))
 
         result = http_analyzer.body(elastic_hit)
         if not isinstance(result, bool):
-            healty = False
+            healthy = False
             status.append(format_red(result))
         else:
             status.append(format_green("OK"))
 
         result = http_analyzer.header(elastic_hit)
         if not isinstance(result, bool):
-            healty = False
+            healthy = False
             status.append(format_red(result))
         else:
             status.append(format_green("OK"))
 
         result = http_analyzer.ip(elastic_hit)
         if not isinstance(result, bool):
-            healty = False
+            healthy = False
             status.append(format_red(result))
         else:
             status.append(format_green("OK"))
 
         result = http_analyzer.response_time(elastic_hit)
         if not isinstance(result, bool):
-            healty = False
+            healthy = False
             status.append(format_red(result))
         else:
             status.append(format_green("OK"))
 
-        print("%s.\t%s %s ->%s\t%s" % (current_thread().getName(), elastic_hit.get_method(),
-                                       elastic_hit.get_path(), elastic_hit.get_response_code(), ' '.join(status)))
+        body = ""
+        if elastic_hit.get_request_body():
+            body = elastic_hit.get_request_body()
+
+        print("%s.\t%s \t%s ->%s\t%s" % (current_thread().getName(), elastic_hit.get_timestamp(),
+                                         elastic_hit.get_query(),
+                                         elastic_hit.get_response_code(), ' '.join(status)))
         response_time = elastic_hit.get_response_time()
         if response_time:
             self.response_times += response_time
 
-        if healty:
+        if healthy:
             self.fine += 1

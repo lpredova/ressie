@@ -10,7 +10,7 @@ from ressie.helpers.helper import *
 
 
 class Check(object):
-    sql = ['select', 'delete', 'update', 'insert', 'join', 'where', 'values', 'from', '#', '--']
+    sql = ['select', 'delete', 'update', 'insert', 'join', 'where', 'values', 'from', '#', '-- ']
     js = ['<script>', 'alert(', 'window.']
     valid_headers = ['application/x-www-form-urlencoded']
 
@@ -69,9 +69,10 @@ class Check(object):
         qp = QueryParser(string, schema=ix.schema)
         q = qp.parse(u"%s" % string)
 
+        print q
         with ix.searcher() as s:
             s.search(q, limit=20)
-            print(s)
+            #print(s.ge)
 
     def send_alert(self, message, hit):
         try:
@@ -89,11 +90,9 @@ class Check(object):
                 print_green(message + "\n Alerts sent!")
             else:
                 if message:
-                    print("\n")
                     print_yellow("Alert sent in simulation mode")
-                    print("\n")
                 else:
-                    print_yellow("\nError spotted in sending\n")
+                    print_yellow("Error spotted in sending")
 
         except Exception as e:
             print(e.message)
