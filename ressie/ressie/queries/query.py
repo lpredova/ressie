@@ -27,6 +27,9 @@ class ElasticQuery(object):
 
         query = {
             "size": 1000,
+            "sort": [
+                {"@timestamp": {"order": "asc"}}
+            ],
             "query": {
                 "bool": {
                     "must": [

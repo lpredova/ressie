@@ -66,13 +66,27 @@ class Check(object):
 
     def check_attack_db(self, string):
         ix = index.open_dir(self.index_folder)
-        qp = QueryParser(string, schema=ix.schema)
+        qp = QueryParser("attack", schema=ix.schema)
         q = qp.parse(u"%s" % string)
 
-        print q
+        attack = False
         with ix.searcher() as s:
-            s.search(q, limit=20)
-            #print(s.ge)
+            results = s.search(q, limit=None)
+            if len(results) > 0:
+                attack = []
+                found = results.scored_length()
+                if results.has_exact_length():
+                    attack.append("Scored %s of exactly %s documents" % (found, len(results)))
+                else:
+                    attack.append("Scored %s of between %s and %s documents" % (found,
+                                                                                results.estimated_min_length(),
+                                                                                results.estimated_length()))
+
+                for result in results:
+                    r = "path: %s \n attack: %s \n title:%s" % (result['path'], result['attack'], result['title'])
+                    attack.append(r)
+
+        return attack
 
     def send_alert(self, message, hit):
         try:

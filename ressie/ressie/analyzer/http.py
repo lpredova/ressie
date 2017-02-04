@@ -35,9 +35,14 @@ class Http(object):
                 msg = "URL blacklisted"
                 self.check.send_alert(msg, hit)
                 return msg
-
         else:
             msg = "SQL or JS detected in url"
+            self.check.send_alert(msg, hit)
+            return msg
+
+
+        if self.check.check_attack_db(url):
+            msg = "Thread detected!"
             self.check.send_alert(msg, hit)
             return msg
 
@@ -121,6 +126,11 @@ class Http(object):
                                 self.check.send_alert(msg, hit)
                                 return msg
 
+                            if self.check.check_attack_db(value[1]):
+                                msg = "Thread detected!"
+                                self.check.send_alert(msg, hit)
+                                return msg
+
             except Exception as e:
                 print(e.message)
 
@@ -142,6 +152,11 @@ class Http(object):
                     self.check.send_alert(msg, hit)
                     return msg
 
+                if self.check.check_attack_db(header[field]):
+                    msg = "Thread detected!"
+                    self.check.send_alert(msg, hit)
+                    return msg
+
         return True
 
     def ip(self, hit):
@@ -155,6 +170,11 @@ class Http(object):
 
             if checker.check_ip_virus_total(ip):
                 msg = "User from malicious IP spotted"
+                self.check.send_alert(msg, hit)
+                return msg
+
+            if self.check.check_attack_db(ip):
+                msg = "Thread detected!"
                 self.check.send_alert(msg, hit)
                 return msg
 
