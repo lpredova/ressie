@@ -40,11 +40,10 @@ class Http(object):
             self.check.send_alert(msg, hit)
             return msg
 
-
-        if self.check.check_attack_db(url):
-            msg = "Thread detected!"
-            self.check.send_alert(msg, hit)
-            return msg
+        attack = self.check.check_attack_db(url)
+        if not isinstance(attack, bool):
+            self.check.send_alert(attack, hit)
+            return "Attack detected!"
 
         return True
 
@@ -69,6 +68,11 @@ class Http(object):
                                     self.check.send_alert(msg, hit)
                                     return msg
 
+                                attack = self.check.check_attack_db(value[1])
+                                if not isinstance(attack, bool):
+                                    self.check.send_alert(attack, hit)
+                                    return "Attack detected!"
+
                     else:
                         if "=" in body:
                             value = body.split("=")
@@ -82,6 +86,11 @@ class Http(object):
                                     msg = "SQL or JS detected in url"
                                     self.check.send_alert(msg, hit)
                                     return msg
+
+                                attack = self.check.check_attack_db(value[1])
+                                if not isinstance(attack, bool):
+                                    self.check.send_alert(attack, hit)
+                                    return "Attack detected!"
 
             else:
                 msg = "SQL or JS detected in body"
@@ -107,10 +116,10 @@ class Http(object):
                                     self.check.send_alert(msg, hit)
                                     return msg
 
-                                if self.check.check_attack_db(value[1]):
-                                    msg = "Thread detected!"
-                                    self.check.send_alert(msg, hit)
-                                    return msg
+                                attack = self.check.check_attack_db(value[1])
+                                if not isinstance(attack, bool):
+                                    self.check.send_alert(attack, hit)
+                                    return "Attack detected!"
 
                 else:
                     if body and "=" in body:
@@ -126,10 +135,10 @@ class Http(object):
                                 self.check.send_alert(msg, hit)
                                 return msg
 
-                            if self.check.check_attack_db(value[1]):
-                                msg = "Thread detected!"
-                                self.check.send_alert(msg, hit)
-                                return msg
+                            attack = self.check.check_attack_db(value[1])
+                            if not isinstance(attack, bool):
+                                self.check.send_alert(attack, hit)
+                                return "Attack detected!"
 
             except Exception as e:
                 print(e.message)
@@ -152,10 +161,10 @@ class Http(object):
                     self.check.send_alert(msg, hit)
                     return msg
 
-                if self.check.check_attack_db(header[field]):
-                    msg = "Thread detected!"
-                    self.check.send_alert(msg, hit)
-                    return msg
+                attack = self.check.check_attack_db(header[field])
+                if not isinstance(attack, bool):
+                    self.check.send_alert(attack, hit)
+                    return "Attack detected!"
 
         return True
 
@@ -173,10 +182,10 @@ class Http(object):
                 self.check.send_alert(msg, hit)
                 return msg
 
-            if self.check.check_attack_db(ip):
-                msg = "Thread detected!"
-                self.check.send_alert(msg, hit)
-                return msg
+            attack = self.check.check_attack_db(ip)
+            if not isinstance(attack, bool):
+                self.check.send_alert(attack, hit)
+                return attack
 
         return True
 
