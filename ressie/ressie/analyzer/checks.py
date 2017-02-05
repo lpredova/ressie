@@ -17,8 +17,9 @@ class Check(object):
     alarming = False
     average_threshold = 1.5
     index_folder = os.getcwd() + "/data/index/"
-    blacklist_folder = os.getcwd() + "/data/custom/"
+    list_folder = os.getcwd() + "/data/custom/lists/"
     blacklist_file = "blacklist.txt"
+    whitelist_file = "whitelist.txt"
 
     def check_for_valid_headers(self, string):
 
@@ -53,7 +54,7 @@ class Check(object):
             if not string:
                 return False
 
-            with open(self.blacklist_folder + self.blacklist_file) as f:
+            with open(self.list_folder + self.blacklist_file) as f:
                 for line in f:
 
                     if similar(string, line) >= 0.6:
@@ -61,6 +62,22 @@ class Check(object):
                         return True
 
             return False
+        except Exception as e:
+            return False
+
+    def check_whitelist(self, string):
+
+        try:
+            if not string:
+                return False
+
+            with open(self.list_folder + self.whitelist_file) as f:
+                for line in f:
+                    if similar(string, line) >= 0.9:
+                        return True
+
+            return False
+
         except Exception as e:
             return False
 

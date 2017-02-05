@@ -24,6 +24,8 @@ Ressie is open source SIEM component for ELK stack, it provides real time monito
 * Pattern matching
 * IP validation against TOR and VirusTotal
 * concurrent process (threading)
+* Blacklisting patterns
+* Whitelisting patterns
 
 **TODO**:
 
