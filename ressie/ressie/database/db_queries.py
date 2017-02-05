@@ -41,6 +41,4 @@ class Queries(object):
 
         sql = 'INSERT INTO ressie.incident VALUES (DEFAULT,"%s","%s","%s",%d)' % (payload, message,
                                                                                   incident_type, int(time.time()))
-
-        print sql
         self.db.insert_query(sql)
