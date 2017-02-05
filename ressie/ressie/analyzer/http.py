@@ -31,6 +31,10 @@ class Http(object):
     def url(self, hit):
         url = hit.get_path()
         if url and not (self.check.check_for_sql_and_js(url)):
+
+            if self.check.check_whitelist(url):
+                return True
+
             if self.check.check_blacklist(url):
                 msg = "URL blacklisted"
                 self.check.send_alert(msg, hit)
@@ -58,6 +62,10 @@ class Http(object):
                         if "=" in param:
                             value = param.split("=")
                             if value[1] and value[1] != '':
+
+                                if self.check.check_whitelist(value[1]):
+                                    return True
+
                                 if self.check.check_blacklist(value[1]):
                                     msg = "query param blacklisted"
                                     self.check.send_alert(msg, hit)
@@ -77,6 +85,9 @@ class Http(object):
                         if "=" in body:
                             value = body.split("=")
                             if value[1] and value[1] != '':
+                                if self.check.check_whitelist(value[1]):
+                                    return True
+
                                 if self.check.check_blacklist(value[1]):
                                     msg = "query param blacklisted"
                                     self.check.send_alert(msg, hit)
@@ -106,6 +117,10 @@ class Http(object):
                         if "=" in param:
                             value = param.split("=")
                             if value[1] and value[1] != '':
+
+                                if self.check.check_whitelist(value[1]):
+                                    return True
+
                                 if self.check.check_blacklist(value[1]):
                                     msg = "query param blacklisted"
                                     self.check.send_alert(msg, hit)
@@ -125,6 +140,10 @@ class Http(object):
                     if body and "=" in body:
                         value = body.split("=")
                         if value[1] and value[1] != '':
+
+                            if self.check.check_whitelist(value[1]):
+                                return True
+
                             if self.check.check_blacklist(value[1]):
                                 msg = "query param blacklisted"
                                 self.check.send_alert(msg, hit)
@@ -149,6 +168,9 @@ class Http(object):
         header = hit.get_request_headers()
 
         for field in header:
+
+            if self.check.check_whitelist(header[field]):
+                return True
 
             if not self.check.check_for_valid_headers(header[field]):
                 if self.check.check_for_sql_and_js(header[field]):

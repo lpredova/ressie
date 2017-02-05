@@ -13,7 +13,7 @@ from ressie.models import Hit
 
 class ElasticQuery(object):
     # in minutes
-    time_threshold = 80
+    time_threshold = 1600
     response_times = average = 0
     fine = 0
 
