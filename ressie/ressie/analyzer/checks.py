@@ -5,6 +5,7 @@ from whoosh.qparser import QueryParser
 
 from ressie.alerts.mail import Mailer
 from ressie.alerts.slack import Slack
+from ressie.analyzer.scripts import Scripts
 from ressie.database import Queries
 from ressie.database.logging import Logger
 from ressie.helpers.helper import *
@@ -17,7 +18,11 @@ class Check(object):
     valid_headers = ['application/x-www-form-urlencoded']
 
     logger = None
+    script = None
+
     alarming = False
+    scripting = True
+
     average_threshold = 1.5
     index_folder = os.getcwd() + "/data/index/"
     list_folder = os.getcwd() + "/data/custom/lists/"
@@ -27,6 +32,7 @@ class Check(object):
     def __init__(self):
         super(Check, self).__init__()
         self.logger = Logger()
+        self.script = Scripts()
 
     def check_for_valid_headers(self, string):
 
@@ -120,6 +126,9 @@ class Check(object):
             query = Queries()
             query.insert_incident(hit.get_log_print(), message, IncidentType.http)
             self.logger.write_to_log(hit.get_log_print(), message)
+
+        if self.scripting:
+            self.script.run_defined_scripts()
 
         try:
             if self.alarming:

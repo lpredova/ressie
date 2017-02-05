@@ -7,6 +7,7 @@ import analyzer.ip as ip
 import helpers.helper as helper
 import indexes.indexer as index
 import queries.query as query
+import ressie.analyzer.scripts as script
 
 
 def main(args=None):
@@ -19,6 +20,10 @@ def main(args=None):
             tor = ip.IP()
             tor.fetch_tor_exit_nodes()
             tor.fetch_ip_addresses_from_file()
+
+        if param == "script":
+            sc = script.Scripts()
+            sc.run_defined_scripts()
 
         if param == "find":
             c = check.Check()
