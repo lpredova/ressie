@@ -7,6 +7,7 @@ from threading import Thread, current_thread
 from elasticsearch import Elasticsearch
 
 from ressie.analyzer.http import Http
+from ressie.database.logging import Logger
 from ressie.helpers import *
 from ressie.models import Hit
 
@@ -16,8 +17,10 @@ class ElasticQuery(object):
     time_threshold = 1600
     response_times = average = 0
     fine = 0
+    logger = None
 
     def __init__(self):
+        self.logger = Logger()
         pass
 
     def check_status(self):
@@ -72,7 +75,8 @@ class ElasticQuery(object):
                     http_analyzer.handle_average(average)
 
             end = time.clock()
-            print("\nEvaluation done in: %fms" % (end - start))
+            stop = end - start
+            print("\nEvaluation done in: %fms" % stop)
 
             if results['hits']['total'] == self.fine:
                 print_green("%d/%d requests healthy" % (self.fine, results['hits']['total']))
@@ -81,10 +85,14 @@ class ElasticQuery(object):
                 print("\n")
                 print_red("%d/%d requests healthy" % (self.fine, results['hits']['total']))
 
+            self.logger.write_to_log("\nEvaluation done in: %fms" % stop,
+                                     "%d/%d requests healthy" % (self.fine, results['hits']['total']))
+
         except Exception as e:
             end = time.clock()
-            print("\nEvaluation done in: %fms" % (end - start))
-            print(e.message)
+            stop = end - start
+            print("\nEvaluation done in: %fms" % stop)
+            self.logger.write_to_log("\nEvaluation done in: %fms" % stop, "")
 
     def run_evaluation(self, hit, http_analyzer):
         elastic_hit = Hit()
@@ -126,10 +134,6 @@ class ElasticQuery(object):
             status.append(format_red(result))
         else:
             status.append(format_green("OK"))
-
-        body = ""
-        if elastic_hit.get_request_body():
-            body = elastic_hit.get_request_body()
 
         print("%s.\t%s \t%s ->%s\t%s" % (current_thread().getName(), elastic_hit.get_timestamp(),
                                          elastic_hit.get_query(),

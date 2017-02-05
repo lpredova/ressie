@@ -6,7 +6,9 @@ from whoosh.qparser import QueryParser
 from ressie.alerts.mail import Mailer
 from ressie.alerts.slack import Slack
 from ressie.database import Queries
+from ressie.database.logging import Logger
 from ressie.helpers.helper import *
+from ressie.models.incident_type_enum import IncidentType
 
 
 class Check(object):
@@ -14,12 +16,17 @@ class Check(object):
     js = ['<script>', 'alert(', 'window.']
     valid_headers = ['application/x-www-form-urlencoded']
 
+    logger = None
     alarming = False
     average_threshold = 1.5
     index_folder = os.getcwd() + "/data/index/"
     list_folder = os.getcwd() + "/data/custom/lists/"
     blacklist_file = "blacklist.txt"
     whitelist_file = "whitelist.txt"
+
+    def __init__(self):
+        super(Check, self).__init__()
+        self.logger = Logger()
 
     def check_for_valid_headers(self, string):
 
@@ -106,16 +113,21 @@ class Check(object):
         return attack
 
     def send_alert(self, message, hit):
+
+        formatted_msg = ""
+        if hit:
+            formatted_msg = hit.get_pretty_print()
+            query = Queries()
+            query.insert_incident(hit.get_log_print(), message, IncidentType.http)
+            self.logger.write_to_log(hit.get_log_print(), message)
+
         try:
             if self.alarming:
-                payload = message
+
                 mailer = Mailer()
                 slack = Slack()
 
-                if hit:
-                    formatted_msg = hit.get_pretty_print()
-                    payload = message + '\n' + formatted_msg
-
+                payload = message + '\n' + formatted_msg
                 mailer.send_message(payload)
                 slack.send_message(payload)
                 print_green(message + "\n Alerts sent!")

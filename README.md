@@ -26,13 +26,12 @@ Ressie is open source SIEM component for ELK stack, it provides real time monito
 * concurrent process (threading)
 * Blacklisting patterns
 * Whitelisting patterns
+* Usage log
 
 **TODO**:
 
-* UI
-* triggering scripts
-* log
-* daily report - every found record goes there
+* UI (configuration,visualisation,daily reports)
+* triggering predefined scripts
 * TBD...
 
 #### On hold

@@ -4,3 +4,4 @@
 variables.env
 config.prod
 MAIN_WRITELOCK
+log-ressie-*
