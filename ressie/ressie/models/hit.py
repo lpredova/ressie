@@ -85,3 +85,12 @@ class Hit(object):
             "%s %s \n:arrow_right: %s \n :arrow_left: %s" % (
                 self.get_method(), self.get_path(), json.dumps(self.get_request(), ensure_ascii=False),
                 json.dumps(self.get_response(), ensure_ascii=False)))
+
+    def get_log_print(self):
+
+        return {
+            'method': self.get_method(),
+            'path': self.get_path(),
+            'request': self.get_request(),
+            'response': self.get_response()
+        }

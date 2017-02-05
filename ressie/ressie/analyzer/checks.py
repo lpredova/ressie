@@ -7,6 +7,7 @@ from ressie.alerts.mail import Mailer
 from ressie.alerts.slack import Slack
 from ressie.database import Queries
 from ressie.helpers.helper import *
+from ressie.models.incident_type_enum import IncidentType
 
 
 class Check(object):
@@ -106,16 +107,20 @@ class Check(object):
         return attack
 
     def send_alert(self, message, hit):
+
+        formatted_msg = ""
+        if hit:
+            formatted_msg = hit.get_pretty_print()
+            query = Queries()
+            query.insert_incident(hit.get_log_print(), message, IncidentType.http)
+
         try:
             if self.alarming:
-                payload = message
+
                 mailer = Mailer()
                 slack = Slack()
 
-                if hit:
-                    formatted_msg = hit.get_pretty_print()
-                    payload = message + '\n' + formatted_msg
-
+                payload = message + '\n' + formatted_msg
                 mailer.send_message(payload)
                 slack.send_message(payload)
                 print_green(message + "\n Alerts sent!")

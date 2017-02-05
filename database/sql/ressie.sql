@@ -29,8 +29,8 @@ USE `ressie`;
 CREATE TABLE IF NOT EXISTS `ressie`.`incident` (
   `id`        INT          NOT NULL AUTO_INCREMENT,
   `payload`   TEXT         NULL,
-  `message`   VARCHAR(255) NULL,
-  `type`      VARCHAR(255) NULL,
+  `message`   TEXT         NULL,
+  `type`      INT          NULL,
   `createdAt` INT          NOT NULL,
   PRIMARY KEY (`id`)
 )

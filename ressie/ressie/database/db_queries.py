@@ -1,3 +1,4 @@
+import json
 import time
 
 import mysql as mysql
@@ -28,3 +29,18 @@ class Queries(object):
     def insert_avg_response_times(self, average):
         query = "INSERT INTO ressie.response_times VALUES (DEFAULT,%d,%d);" % (average, int(time.time()))
         self.db.insert_query(query)
+
+    def insert_incident(self, payload, message, incident_type):
+        payload = (json.dumps(payload, ensure_ascii=False)).replace('"', "'")
+
+        if isinstance(message, list):
+            for element in message:
+                element.replace('"', "'")
+        else:
+            message.replace('"', "'")
+
+        sql = 'INSERT INTO ressie.incident VALUES (DEFAULT,"%s","%s","%s",%d)' % (payload, message,
+                                                                                  incident_type, int(time.time()))
+
+        print sql
+        self.db.insert_query(sql)
