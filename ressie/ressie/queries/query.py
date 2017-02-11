@@ -15,7 +15,7 @@ from ressie.models import Hit
 class ElasticQuery(object):
     # in minutes
     time_threshold = 1600
-    response_times = average = 0
+    response_times = request_length = average = 0
     fine = 0
     logger = None
 
@@ -70,9 +70,13 @@ class ElasticQuery(object):
                 thread.join()
 
             if results['hits']['total'] > 0:
-                average = self.response_times / results['hits']['total']
-                if average > 0:
-                    http_analyzer.handle_average(average)
+                average_response_time = self.response_times / results['hits']['total']
+                if average_response_time > 0:
+                    http_analyzer.handle_average_response_time(average_response_time)
+
+                average_request_length = self.request_length / results['hits']['total']
+                if average_request_length > 0:
+                    http_analyzer.handle_average_request_size(average_request_length)
 
             end = time.clock()
             stop = end - start
@@ -141,6 +145,10 @@ class ElasticQuery(object):
         response_time = elastic_hit.get_response_time()
         if response_time:
             self.response_times += response_time
+
+        request_length = elastic_hit.get_request_size()
+        if request_length:
+            self.request_length += request_length
 
         if healthy:
             self.fine += 1

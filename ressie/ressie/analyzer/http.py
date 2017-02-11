@@ -226,5 +226,8 @@ class Http(object):
 
         return True
 
-    def handle_average(self, average):
-        self.check.handle_average(average)
+    def handle_average_response_time(self, average):
+        self.check.handle_average_response_time(average)
+
+    def handle_average_request_size(self, average):
+        self.check.handle_average_request_size(self, average)
