@@ -149,6 +149,11 @@ class Check(object):
         except Exception as e:
             print(e.message)
 
-    def handle_average(self, average):
+    def handle_average_response_time(self, average):
         query = Queries()
         query.insert_avg_response_times(average)
+
+    def handle_average_request_size(self, average):
+        query = Queries()
+        query.insert_avg_request_size(average)
+

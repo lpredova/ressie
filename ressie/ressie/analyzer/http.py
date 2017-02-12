@@ -7,7 +7,7 @@ from ressie.database import Queries
 
 class Http(object):
     check = None
-    average_threshold = 1.5
+    average_threshold = 2
 
     def __init__(self):
         super(Http, self).__init__()
@@ -220,11 +220,29 @@ class Http(object):
             if response_time:
                 avg = decimal.Decimal(average) * decimal.Decimal(self.average_threshold)
                 if avg and avg <= decimal.Decimal(response_time):
-                    msg = "Response is taking unusually long (%d ms)" % response_time
+                    msg = "Response is taking unusually long (%d ms) avg is %f" % (response_time, float(avg))
                     self.check.send_alert(msg, hit)
                     return msg
 
         return True
 
-    def handle_average(self, average):
-        self.check.handle_average(average)
+    def request_size(self, hit):
+        query = Queries()
+        average = query.avg_request_size()['average']
+
+        if average:
+            request_size = hit.get_request_size()
+            if request_size and request_size > 0:
+                avg = decimal.Decimal(average) * decimal.Decimal(self.average_threshold)
+                if avg and avg <= decimal.Decimal(request_size):
+                    msg = "Response is much larger then average long (%d) avg is %f" % (request_size, float(avg))
+                    self.check.send_alert(msg, hit)
+                    return msg
+
+        return True
+
+    def handle_average_response_time(self, average):
+        self.check.handle_average_response_time(average)
+
+    def handle_average_request_size(self, average):
+        self.check.handle_average_request_size(average)

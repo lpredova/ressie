@@ -55,6 +55,12 @@ class Hit(object):
 
         return None
 
+    def get_request_size(self):
+        if self.hit["_source"]["http"]["request"]["headers"]["content-length"]:
+            return self.hit["_source"]["http"]["request"]["headers"]["content-length"]
+
+        return None
+
     def get_request_body(self):
         if self.hit["_source"]["http"]["request"]["params"]:
             return self.hit["_source"]["http"]["request"]["params"]

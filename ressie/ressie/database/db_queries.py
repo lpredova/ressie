@@ -30,6 +30,14 @@ class Queries(object):
         query = "INSERT INTO ressie.response_times VALUES (DEFAULT,%d,%d);" % (average, int(time.time()))
         self.db.insert_query(query)
 
+    def avg_request_size(self):
+        query = "SELECT AVG(time) as average FROM ressie.response_times"
+        return self.db.execute_query(query)
+
+    def insert_avg_request_size(self, average):
+        query = "INSERT INTO ressie.response_times VALUES (DEFAULT,%d,%d);" % (average, int(time.time()))
+        self.db.insert_query(query)
+
     def insert_incident(self, payload, message, incident_type):
         payload = (json.dumps(payload, ensure_ascii=False)).replace('"', "'")
 
