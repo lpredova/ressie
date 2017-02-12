@@ -139,6 +139,13 @@ class ElasticQuery(object):
         else:
             status.append(format_green("OK"))
 
+        result = http_analyzer.request_size(elastic_hit)
+        if not isinstance(result, bool):
+            healthy = False
+            status.append(format_red(result))
+        else:
+            status.append(format_green("OK"))
+
         print("%s.\t%s \t%s ->%s\t%s" % (current_thread().getName(), elastic_hit.get_timestamp(),
                                          elastic_hit.get_query(),
                                          elastic_hit.get_response_code(), ' '.join(status)))

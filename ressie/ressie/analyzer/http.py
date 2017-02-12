@@ -226,6 +226,21 @@ class Http(object):
 
         return True
 
+    def request_size(self, hit):
+        query = Queries()
+        average = query.avg_request_size()['average']
+
+        if average:
+            request_size = hit.get_request_size()
+            if request_size and request_size > 0:
+                avg = decimal.Decimal(average) * decimal.Decimal(self.average_threshold)
+                if avg and avg <= (decimal.Decimal(request_size) * 1.4):
+                    msg = "Response is much larger then average long (%d)" % request_size
+                    self.check.send_alert(msg, hit)
+                    return msg
+
+        return True
+
     def handle_average_response_time(self, average):
         self.check.handle_average_response_time(average)
 
