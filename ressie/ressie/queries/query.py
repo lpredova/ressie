@@ -15,7 +15,7 @@ from ressie.models import Hit
 class ElasticQuery(object):
     # in minutes
     time_threshold = 1600
-    response_times = request_length = average = 0
+    response_times = request_length = average = number_of_valid_times = number_of_valid_length = 0
     fine = 0
     logger = None
 
@@ -69,12 +69,13 @@ class ElasticQuery(object):
                 thread.start()
                 thread.join()
 
-            if results['hits']['total'] > 0:
-                average_response_time = self.response_times / results['hits']['total']
+            if self.number_of_valid_times > 0:
+                average_response_time = self.response_times / self.number_of_valid_times
                 if average_response_time > 0:
                     http_analyzer.handle_average_response_time(average_response_time)
 
-                average_request_length = self.request_length / results['hits']['total']
+            if self.number_of_valid_length > 0:
+                average_request_length = self.request_length / self.number_of_valid_length
                 if average_request_length > 0:
                     http_analyzer.handle_average_request_size(average_request_length)
 
@@ -149,13 +150,19 @@ class ElasticQuery(object):
         print("%s.\t%s \t%s ->%s\t%s" % (current_thread().getName(), elastic_hit.get_timestamp(),
                                          elastic_hit.get_query(),
                                          elastic_hit.get_response_code(), ' '.join(status)))
+
         response_time = elastic_hit.get_response_time()
-        if response_time:
+
+        # bigger than 10 because of average, skipping outliers
+        if response_time and response_time > 10:
             self.response_times += response_time
+            self.number_of_valid_times += 1
 
         request_length = elastic_hit.get_request_size()
-        if request_length:
+        # bigger than 30 because of average, skipping outliers
+        if request_length and request_length > 30:
             self.request_length += request_length
+            self.number_of_valid_length += 1
 
         if healthy:
             self.fine += 1
