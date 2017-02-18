@@ -12,7 +12,6 @@ WORKDIR /var/www/html
 VOLUME /var/www/html/
 
 # Elastic Beats
-
 # Filebeat
 RUN curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-5.1.2-amd64.deb && dpkg -i filebeat-5.1.2-amd64.deb
 ADD ./filebeat.yml /etc/filebeat/filebeat.yml

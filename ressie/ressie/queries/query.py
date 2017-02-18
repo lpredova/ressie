@@ -13,8 +13,8 @@ from ressie.models import Hit
 
 
 class ElasticQuery(object):
-    # in minutes
-    time_threshold = 1600
+    # in seconds
+    time_threshold = 1800
     response_times = request_length = average = number_of_valid_times = number_of_valid_length = 0
     fine = 0
     logger = None
@@ -44,7 +44,7 @@ class ElasticQuery(object):
                         {
                             "range": {
                                 "@timestamp": {
-                                    "gte": "now-%dm" % self.time_threshold
+                                    "gte": "now-%ds" % self.time_threshold
                                 }
                             }
                         }

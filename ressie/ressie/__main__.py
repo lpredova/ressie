@@ -1,4 +1,7 @@
+from __future__ import print_function
+
 import sys
+import time
 
 import alerts.mail as mailer
 import alerts.slack as slack
@@ -16,6 +19,19 @@ def main(args=None):
 
     try:
         param = args[0]
+        if param == "run":
+            iteration = 1
+            try:
+                while 1:
+                    print("%d Evaluating requests...\n" % iteration)
+                    elastic = query.ElasticQuery()
+                    elastic.check_status()
+                    time.sleep(10)
+                    iteration += 1
+            except KeyboardInterrupt:
+                print('\nExiting by user request.\n')
+                sys.exit(0)
+
         if param == "tor":
             tor = ip.IP()
             tor.fetch_tor_exit_nodes()
