@@ -1,4 +1,5 @@
 import decimal
+import urllib
 
 from checks import Check
 from ip import IP
@@ -62,21 +63,22 @@ class Http(object):
                         if "=" in param:
                             value = param.split("=")
                             if value[1] and value[1] != '':
+                                payload = urllib.unquote(value[1]).decode('utf8')
 
-                                if self.check.check_whitelist(value[1]):
+                                if self.check.check_whitelist(payload):
                                     return True
 
-                                if self.check.check_blacklist(value[1]):
+                                if self.check.check_blacklist(payload):
                                     msg = "query param blacklisted"
                                     self.check.send_alert(msg, hit)
                                     return msg
 
-                                if self.check.check_for_sql_and_js(value[1]):
+                                if self.check.check_for_sql_and_js(payload):
                                     msg = "SQL or JS detected in url"
                                     self.check.send_alert(msg, hit)
                                     return msg
 
-                                attack = self.check.check_attack_db(value[1])
+                                attack = self.check.check_attack_db(payload)
                                 if not isinstance(attack, bool):
                                     self.check.send_alert(attack, hit)
                                     return "Attack detected!"
@@ -85,20 +87,22 @@ class Http(object):
                         if "=" in body:
                             value = body.split("=")
                             if value[1] and value[1] != '':
-                                if self.check.check_whitelist(value[1]):
+                                payload = urllib.unquote(value[1]).decode('utf8')
+
+                                if self.check.check_whitelist(payload):
                                     return True
 
-                                if self.check.check_blacklist(value[1]):
+                                if self.check.check_blacklist(payload):
                                     msg = "query param blacklisted"
                                     self.check.send_alert(msg, hit)
                                     return msg
 
-                                if self.check.check_for_sql_and_js(value[1]):
+                                if self.check.check_for_sql_and_js(payload):
                                     msg = "SQL or JS detected in url"
                                     self.check.send_alert(msg, hit)
                                     return msg
 
-                                attack = self.check.check_attack_db(value[1])
+                                attack = self.check.check_attack_db(payload)
                                 if not isinstance(attack, bool):
                                     self.check.send_alert(attack, hit)
                                     return "Attack detected!"
@@ -117,21 +121,22 @@ class Http(object):
                         if "=" in param:
                             value = param.split("=")
                             if value[1] and value[1] != '':
+                                payload = urllib.unquote(value[1]).decode('utf8')
 
-                                if self.check.check_whitelist(value[1]):
+                                if self.check.check_whitelist(payload):
                                     return True
 
-                                if self.check.check_blacklist(value[1]):
+                                if self.check.check_blacklist(payload):
                                     msg = "query param blacklisted"
                                     self.check.send_alert(msg, hit)
                                     return msg
 
-                                if self.check.check_for_sql_and_js(value[1]):
+                                if self.check.check_for_sql_and_js(payload):
                                     msg = "SQL or JS detected in url"
                                     self.check.send_alert(msg, hit)
                                     return msg
 
-                                attack = self.check.check_attack_db(value[1])
+                                attack = self.check.check_attack_db(payload)
                                 if not isinstance(attack, bool):
                                     self.check.send_alert(attack, hit)
                                     return "Attack detected!"
@@ -140,21 +145,22 @@ class Http(object):
                     if body and "=" in body:
                         value = body.split("=")
                         if value[1] and value[1] != '':
+                            payload = urllib.unquote(value[1]).decode('utf8')
 
-                            if self.check.check_whitelist(value[1]):
+                            if self.check.check_whitelist(payload):
                                 return True
 
-                            if self.check.check_blacklist(value[1]):
+                            if self.check.check_blacklist(payload):
                                 msg = "query param blacklisted"
                                 self.check.send_alert(msg, hit)
                                 return msg
 
-                            if self.check.check_for_sql_and_js(value[1]):
+                            if self.check.check_for_sql_and_js(payload):
                                 msg = "SQL or JS detected in url"
                                 self.check.send_alert(msg, hit)
                                 return msg
 
-                            attack = self.check.check_attack_db(value[1])
+                            attack = self.check.check_attack_db(payload)
                             if not isinstance(attack, bool):
                                 self.check.send_alert(attack, hit)
                                 return "Attack detected!"

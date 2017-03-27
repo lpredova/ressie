@@ -37,6 +37,10 @@ def print_red(text):
     print('\x1b[6;30;41m' + text + '\x1b[0m')
 
 
+def format_blue(text):
+    return '\033[0;34m' + text + '\x1b[0m'
+
+
 def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 

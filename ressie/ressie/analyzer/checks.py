@@ -71,7 +71,7 @@ class Check(object):
                 for line in f:
 
                     if similar(string, line) >= 0.6:
-                        print_red("\n%s is blacklisted!" % string)
+                        print_red("\t %s is blacklisted!" % string)
                         return True
 
             return False

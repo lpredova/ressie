@@ -147,9 +147,13 @@ class ElasticQuery(object):
         else:
             status.append(format_green("OK"))
 
-        print("%s.\t%s \t%s ->%s\t%s" % (current_thread().getName(), elastic_hit.get_timestamp(),
-                                         elastic_hit.get_query(),
-                                         elastic_hit.get_response_code(), ' '.join(status)))
+        status_code = elastic_hit.get_response_code()
+        if status_code >= 400:
+            status_code = format_blue(str(status_code))
+
+        print("%s.\t%s \t%s -> %s\t%s" % (current_thread().getName(), elastic_hit.get_timestamp(),
+                                          elastic_hit.get_query(),
+                                          status_code, ' '.join(status)))
 
         response_time = elastic_hit.get_response_time()
 

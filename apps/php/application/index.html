@@ -1,0 +1,52 @@
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<h1>This is sample page for Ressie DEMO</h1>
+<a href="https://github.com/lpredova/ressie" target="_blank">Ressie Github</a>
+
+
+<form method="POST">
+    <h2>Send POST</h2>
+    <input type="text" name="payload" placeholder="param 1"/>
+    <input type="text" name="payload1" placeholder="param 2"/>
+    <input type="submit" name="Submit"/>
+</form>
+
+<form method="GET">
+    <h2>Send GET</h2>
+    <input type="text" name="payload" placeholder="param 1"/>
+    <input type="text" name="payload1" placeholder="param 2"/>
+    <input type="submit" name="Submit"/>
+</form>
+
+
+<h2>Bad GET/POST params</h2>
+<iframe width="1000" height="400" src="attacks.txt"></iframe>
+<iframe src="&%20ping%20-n%2030%20127.0.0.1%20&"></iframe>
+
+
+<h1>Results</h1>
+<div id="container">
+    <iframe id="result" src="test-output.txt" width="1000" height="400"></iframe>
+    <br>
+    <input  type="button" value="Refresh results"  onclick="loadFile()" />
+</div>
+
+
+<script type="text/javascript">
+
+function loadFile() {
+    document.getElementById('result').contentWindow.location.reload();
+}
+
+setInterval(function() {
+    $.get(document.location.toString()).then(function (data){
+       loadFile();
+    });
+}, 10000);
+
+</script>
+</body>
+</html>
