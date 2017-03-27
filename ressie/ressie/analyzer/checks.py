@@ -1,4 +1,5 @@
 import os
+from distutils.util import strtobool
 
 import whoosh.index as index
 from whoosh.qparser import QueryParser
@@ -10,6 +11,7 @@ from ressie.database import Queries
 from ressie.database.logging import Logger
 from ressie.helpers.helper import *
 from ressie.models.incident_type_enum import IncidentType
+from ..configurations.config import Config
 
 
 class Check(object):
@@ -23,16 +25,24 @@ class Check(object):
     alarming = False
     scripting = True
 
-    average_threshold = 1.5
     index_folder = os.getcwd() + "/data/index/"
     list_folder = os.getcwd() + "/data/custom/lists/"
     blacklist_file = "blacklist.txt"
     whitelist_file = "whitelist.txt"
 
+    whitelist_similarity = 0.6
+    blacklist_similarity = 0.9
+
     def __init__(self):
         super(Check, self).__init__()
         self.logger = Logger()
         self.script = Scripts()
+
+        configuration = Config()
+        self.alarming = strtobool(configuration.parse_config("Ressie", "alarming_on"))
+        self.scripting = strtobool(configuration.parse_config("Ressie", "scripting_on"))
+        self.whitelist_similarity = float(configuration.parse_config("Ressie", "similarity_white_list"))
+        self.blacklist_similarity = float(configuration.parse_config("Ressie", "similarity_black_list"))
 
     def check_for_valid_headers(self, string):
 
@@ -70,7 +80,7 @@ class Check(object):
             with open(self.list_folder + self.blacklist_file) as f:
                 for line in f:
 
-                    if similar(string, line) >= 0.6:
+                    if similar(string, line) >= self.blacklist_similarity:
                         print_red("\t %s is blacklisted!" % string)
                         return True
 
@@ -86,7 +96,7 @@ class Check(object):
 
             with open(self.list_folder + self.whitelist_file) as f:
                 for line in f:
-                    if similar(string, line) >= 0.9:
+                    if similar(string, line) >= self.whitelist_similarity:
                         return True
 
             return False
@@ -156,4 +166,3 @@ class Check(object):
     def handle_average_request_size(self, average):
         query = Queries()
         query.insert_avg_request_size(average)
-

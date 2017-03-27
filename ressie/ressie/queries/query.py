@@ -10,17 +10,26 @@ from ressie.analyzer.http import Http
 from ressie.database.logging import Logger
 from ressie.helpers import *
 from ressie.models import Hit
+from ..configurations.config import Config
 
 
 class ElasticQuery(object):
-    # in seconds
-    time_threshold = 1800
     response_times = request_length = average = number_of_valid_times = number_of_valid_length = 0
     fine = 0
     logger = None
 
+    # in seconds
+    time_threshold = 1800
+    response_time_average = 10
+    request_length_average = 30
+
     def __init__(self):
         self.logger = Logger()
+
+        configuration = Config()
+        self.time_threshold = int(configuration.parse_config("Ressie", "refresh_interval"))
+        self.response_time_average = int(configuration.parse_config("Ressie", "response_time_average"))
+        self.request_length_average = int(configuration.parse_config("Ressie", "request_length_average"))
         pass
 
     def check_status(self):
@@ -158,13 +167,13 @@ class ElasticQuery(object):
         response_time = elastic_hit.get_response_time()
 
         # bigger than 10 because of average, skipping outliers
-        if response_time and response_time > 10:
+        if response_time and response_time > self.response_time_average:
             self.response_times += response_time
             self.number_of_valid_times += 1
 
         request_length = elastic_hit.get_request_size()
         # bigger than 30 because of average, skipping outliers
-        if request_length and request_length > 30:
+        if request_length and request_length > self.request_length_average:
             self.request_length += request_length
             self.number_of_valid_length += 1
 

@@ -17,7 +17,6 @@ class Config(object):
     def config_section_map(self, section, config_reader):
         dict1 = {}
         options = config_reader.options(section)
-
         for option in options:
             try:
                 dict1[option] = config_reader.get(section, option)

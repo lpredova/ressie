@@ -4,6 +4,7 @@ import urllib
 from checks import Check
 from ip import IP
 from ressie.database import Queries
+from ..configurations.config import Config
 
 
 class Http(object):
@@ -13,6 +14,9 @@ class Http(object):
     def __init__(self):
         super(Http, self).__init__()
         self.check = Check()
+
+        configuration = Config()
+        self.average_threshold = int(configuration.parse_config("Ressie", "http_average_coefficient"))
 
     def number_requests(self, hits):
         query = Queries()

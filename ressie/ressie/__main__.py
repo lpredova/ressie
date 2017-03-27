@@ -11,6 +11,7 @@ import helpers.helper as helper
 import indexes.indexer as index
 import queries.query as query
 import ressie.analyzer.scripts as script
+from ressie.configurations.config import Config
 
 
 def main(args=None):
@@ -22,11 +23,13 @@ def main(args=None):
         if param == "run":
             iteration = 1
             try:
+                configuration = Config()
+                refresh = int(configuration.parse_config("Ressie", "time_window"))
                 while 1:
                     print("%d Evaluating requests...\n" % iteration)
                     elastic = query.ElasticQuery()
                     elastic.check_status()
-                    time.sleep(10)
+                    time.sleep(refresh)
                     iteration += 1
             except KeyboardInterrupt:
                 print('\nExiting by user request.\n')

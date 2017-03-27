@@ -11,3 +11,14 @@ authorized_recipient: mailgun_authorized_recipient@recipient.com
 [VirusTotal]
 api_key: this-is-my-v-total-key
 
+[Ressie]
+time_window: 10
+refresh_interval: 1800
+response_time_average : 10
+request_length_average : 30
+similarity_black_list : 0.6
+similarity_white_list : 0.9
+alarming_on: False
+scripting_on: True
+http_average_coefficient : 2
+
